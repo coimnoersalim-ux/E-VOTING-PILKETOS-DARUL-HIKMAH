@@ -15,7 +15,7 @@
         
         /* Background Resmi Merah Putih & Navy */
         .bg-resmi {
-            background-color: #0f172a; /* slate-900 */
+            background-color: #0f172a;
             background-image: 
                 linear-gradient(135deg, rgba(220, 38, 38, 0.05) 0%, rgba(220, 38, 38, 0.05) 50%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0.05) 100%);
             background-size: 200% 200%;
@@ -28,24 +28,21 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Gold Gradient Border for Candidate Photos */
         .gold-border {
             padding: 4px;
             background: linear-gradient(135deg, #fbbf24 0%, #d97706 50%, #fef3c7 100%);
             border-radius: 1rem;
         }
 
-        /* Print Media Styles */
+        /* PERBAIKAN PRINT: Sembunyikan semua kecuali area cetak */
         @media print {
-            body { background: white; }
-            .no-print { display: none !important; }
-            .print-only { display: block !important; }
-            .print-container { width: 100%; padding: 0; margin: 0; }
+            body { background: white !important; }
+            body > *:not(#printContainer) { display: none !important; }
+            #printContainer { display: block !important; width: 100%; padding: 0; margin: 0; }
             .page-break { page-break-before: always; }
         }
-        .print-only { display: none; }
+        #printContainer { display: none; }
         
-        /* Custom Scrollbar for Visi Misi */
         .scrollbar-hide::-webkit-scrollbar { width: 6px; }
         .scrollbar-hide::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
         .scrollbar-hide::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
@@ -98,7 +95,7 @@
                     <div>
                         <label class="block text-sm font-medium text-slate-300 mb-1">PIN Keamanan</label>
                         <input type="password" id="adminPin" required class="w-full px-4 py-3 rounded-xl bg-white/90 border-0 focus:ring-2 focus:ring-blue-400 outline-none text-slate-800 placeholder-slate-400 font-semibold text-center tracking-widest" placeholder="Masukkan PIN Admin">
-                        <p class="text-xs text-slate-400 mt-2 text-center">PIN Default: 123456</p>
+                        <!-- Teks panduan PIN sudah dihapus demi keamanan -->
                     </div>
                     <button type="submit" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg mt-4 flex justify-center items-center gap-2">
                         <i data-lucide="shield-check" class="w-5 h-5 text-amber-400"></i> MASUK DASHBOARD
@@ -116,7 +113,7 @@
     <!-- ADMIN DASHBOARD -->
     <div id="adminDashboard" class="hidden h-screen w-full flex bg-slate-50">
         <!-- Sidebar -->
-        <div class="w-64 bg-slate-900 text-white flex flex-col no-print shadow-2xl z-10">
+        <div class="w-64 bg-slate-900 text-white flex flex-col shadow-2xl z-10">
             <div class="p-6 flex flex-col items-center border-b border-slate-800">
                 <div class="flex items-center gap-2 mb-3">
                     <img src="logo_sekolah.png" alt="MTs" class="h-10 w-10 object-contain" onerror="this.src='https://via.placeholder.com/40/1e3a8a/ffffff?text=MTs'">
@@ -148,7 +145,7 @@
 
         <!-- Main Content Area -->
         <div class="flex-1 flex flex-col overflow-hidden relative">
-            <header class="bg-white shadow-sm border-b border-slate-200 px-8 py-4 flex justify-between items-center no-print z-10">
+            <header class="bg-white shadow-sm border-b border-slate-200 px-8 py-4 flex justify-between items-center z-10">
                 <h2 id="adminHeaderTitle" class="text-xl font-bold text-slate-800">Dashboard Hasil Pemilihan</h2>
                 <div class="flex items-center gap-4">
                     <div id="statusPemilu" class="px-4 py-1.5 rounded-full text-sm font-medium bg-green-100 text-green-700 border border-green-200 flex items-center gap-2">
@@ -229,7 +226,7 @@
                         </div>
                         <div class="flex-1 overflow-auto border border-slate-200 rounded-xl relative">
                             <table class="w-full text-left border-collapse min-w-max">
-                                <thead class="bg-slate-50 sticky top-0 shadow-sm">
+                                <thead class="bg-slate-50 sticky top-0 shadow-sm z-10">
                                     <tr>
                                         <th class="py-3 px-4 text-sm font-bold text-slate-700 border-b">No</th>
                                         <th class="py-3 px-4 text-sm font-bold text-slate-700 border-b">NIS / NIP</th>
@@ -257,13 +254,13 @@
                                 <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4"><i data-lucide="file-text" class="w-8 h-8"></i></div>
                                 <h4 class="font-bold text-slate-800 mb-2">Berita Acara Hasil</h4>
                                 <p class="text-sm text-slate-500 mb-4">Cetak dokumen resmi hasil perolehan suara (Quick Count) Pilketos.</p>
-                                <button onclick="cetakBeritaAcara()" class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors w-full">Cetak / PDF</button>
+                                <button onclick="cetakBeritaAcara()" class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors w-full">Cetak Dokumen</button>
                             </div>
                             <div class="border border-slate-200 p-6 rounded-xl text-center hover:border-slate-300 transition-colors">
                                 <div class="w-16 h-16 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4"><i data-lucide="users" class="w-8 h-8"></i></div>
                                 <h4 class="font-bold text-slate-800 mb-2">Daftar Hadir Pemilih</h4>
                                 <p class="text-sm text-slate-500 mb-4">Cetak tabel daftar pemilih sebagai bukti fisik kehadiran & token.</p>
-                                <button onclick="cetakDaftarHadir()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 px-6 py-2 rounded-lg text-sm font-bold transition-colors w-full">Cetak / PDF</button>
+                                <button onclick="cetakDaftarHadir()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 px-6 py-2 rounded-lg text-sm font-bold transition-colors w-full">Cetak Dokumen</button>
                             </div>
                         </div>
                     </div>
@@ -274,11 +271,8 @@
 
     <!-- VOTER DASHBOARD (BILIK SUARA) -->
     <div id="voterDashboard" class="hidden h-screen w-full flex flex-col bg-slate-50 relative overflow-y-auto">
-        <!-- Voter Header -->
         <header class="bg-slate-900 shadow-lg text-white sticky top-0 z-40 relative">
-            <!-- Decorative gradient line -->
             <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500"></div>
-            
             <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex items-center gap-4">
                     <div class="flex gap-2 bg-white/10 p-2 rounded-lg backdrop-blur-sm">
@@ -307,7 +301,6 @@
                 <h2 class="text-3xl font-bold text-slate-800 mb-2">Tentukan Pilihan Anda</h2>
                 <p class="text-slate-500">Pilih satu pasangan calon yang menurut Anda paling pantas memimpin OSIS.</p>
             </div>
-            
             <div id="bilikSuaraContainer" class="flex flex-wrap justify-center gap-8">
                 <!-- Cards injected by JS -->
             </div>
@@ -318,7 +311,7 @@
     <div id="modalKandidat" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl w-full max-w-2xl shadow-2xl relative my-8">
             <div class="p-6 border-b border-slate-200 flex justify-between items-center sticky top-0 bg-white rounded-t-2xl z-10">
-                <h3 class="text-xl font-bold text-slate-800" id="modalKandidatTitle">Form Data Paslon</h3>
+                <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2" id="modalKandidatTitle"><i data-lucide="edit-3" class="w-5 h-5 text-amber-500"></i> Form Data Paslon</h3>
                 <button onclick="closeKandidatModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-6 h-6"></i></button>
             </div>
             <div class="p-6">
@@ -363,25 +356,20 @@
         </div>
     </div>
 
-    <!-- PRINT CONTAINER (Hidden on screen, visible on print) -->
-    <div id="printContainer" class="print-only p-8 text-black bg-white min-h-screen">
+    <!-- PRINT CONTAINER -->
+    <div id="printContainer" class="p-8 text-black bg-white min-h-screen">
         <!-- Content injected dynamically before printing -->
     </div>
 
     <script>
-        // Initialize Icons
         lucide.createIcons();
-
-        // Global State & LocalStorage Keys
         const STORAGE_KANDIDAT = 'evoting_kandidat';
         const STORAGE_PEMILIH = 'evoting_pemilih';
         let chartInstance = null;
 
-        // Ensure data exists
         if (!localStorage.getItem(STORAGE_KANDIDAT)) localStorage.setItem(STORAGE_KANDIDAT, JSON.stringify([]));
         if (!localStorage.getItem(STORAGE_PEMILIH)) localStorage.setItem(STORAGE_PEMILIH, JSON.stringify([]));
 
-        // File Upload to Base64 handler
         document.getElementById('kFotoFile').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -393,7 +381,6 @@
             }
         });
 
-        // ================= SESSION MANAGEMENT =================
         document.addEventListener("DOMContentLoaded", () => {
             const isAdmin = localStorage.getItem("adminLoggedIn");
             const activeVoter = localStorage.getItem("activeVoter");
@@ -421,7 +408,6 @@
             }
         }
 
-        // ================= UNIVERSAL LOGOUT =================
         window.logout = function() {
             Swal.fire({
                 title: 'Yakin ingin keluar?',
@@ -430,18 +416,16 @@
                 showCancelButton: true,
                 confirmButtonColor: '#0f172a',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, Keluar',
-                cancelButtonText: 'Batal'
+                confirmButtonText: 'Ya, Keluar'
             }).then((result) => {
                 if (result.isConfirmed) {
                     localStorage.removeItem("adminLoggedIn");
                     localStorage.removeItem("activeVoter");
-                    window.location.reload(); // Force reload to clear all states cleanly
+                    window.location.reload();
                 }
             });
         };
 
-        // ================= AUTHENTICATION =================
         function handleAdminLogin(e) {
             e.preventDefault();
             const pin = document.getElementById('adminPin').value;
@@ -480,7 +464,6 @@
             }
         }
 
-        // ================= VOTER DASHBOARD =================
         function renderVoterDashboard() {
             const voterData = JSON.parse(localStorage.getItem("activeVoter"));
             if(!voterData) return;
@@ -502,9 +485,7 @@
                 return `
                 <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm flex flex-col overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 border border-slate-100">
                     <div class="bg-slate-900 p-8 flex justify-center relative">
-                        <!-- Number Badge -->
                         <div class="absolute top-4 right-4 bg-amber-500 text-slate-900 w-10 h-10 rounded-full flex items-center justify-center font-black text-xl shadow-lg border-2 border-slate-900 z-10">${c.noUrut}</div>
-                        <!-- Photo with Gold Border -->
                         <div class="w-48 h-64 gold-border shadow-2xl relative bg-slate-800">
                             <img src="${imgSource}" alt="Paslon ${c.noUrut}" class="w-full h-full object-cover object-top rounded-xl bg-slate-200" onerror="this.src='https://via.placeholder.com/300x400/cbd5e1/475569?text=Tidak+Ada+Foto'">
                         </div>
@@ -512,16 +493,12 @@
                     <div class="p-6 text-center flex flex-col flex-grow">
                         <h3 class="text-xl font-bold text-slate-800 mb-1">${c.ketua}</h3>
                         <p class="text-sm text-slate-500 mb-4">Wakil: ${c.wakil}</p>
-                        
-                        <!-- VISI MISI DIRECT DISPLAY -->
                         <div class="text-left bg-slate-50 p-4 rounded-lg border border-slate-200 mb-6 h-48 overflow-y-auto scrollbar-hide shadow-inner text-sm flex-grow">
                             <p class="font-bold text-amber-600 mb-1 text-[11px] uppercase tracking-wider">Visi:</p>
                             <p class="text-slate-700 mb-4 whitespace-pre-wrap leading-relaxed">${c.visi}</p>
-                            
                             <p class="font-bold text-amber-600 mb-1 text-[11px] uppercase tracking-wider">Misi:</p>
                             <p class="text-slate-700 whitespace-pre-wrap leading-relaxed">${c.misi}</p>
                         </div>
-
                         <button onclick="confirmVote('${c.id}', '${c.noUrut}')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg flex items-center justify-center gap-2 mt-auto">
                             <i data-lucide="check-square" class="w-5 h-5 text-amber-400"></i> COBLOS PASLON ${c.noUrut}
                         </button>
@@ -539,12 +516,9 @@
                 showCancelButton: true,
                 confirmButtonColor: '#0f172a',
                 cancelButtonColor: '#64748b',
-                confirmButtonText: 'Ya, Coblos!',
-                cancelButtonText: 'Batal'
+                confirmButtonText: 'Ya, Coblos!'
             }).then((result) => {
-                if (result.isConfirmed) {
-                    submitVote(kandidatId);
-                }
+                if (result.isConfirmed) submitVote(kandidatId);
             });
         }
 
@@ -552,14 +526,12 @@
             const voterData = JSON.parse(localStorage.getItem("activeVoter"));
             let pemilihList = JSON.parse(localStorage.getItem(STORAGE_PEMILIH));
             
-            // Update Voter Status
             const vIndex = pemilihList.findIndex(p => p.nis === voterData.nis);
             if(vIndex !== -1) {
                 pemilihList[vIndex].status = 'sudah';
                 localStorage.setItem(STORAGE_PEMILIH, JSON.stringify(pemilihList));
             }
 
-            // Update Candidate Vote Count
             let candidates = JSON.parse(localStorage.getItem(STORAGE_KANDIDAT));
             const cIndex = candidates.findIndex(c => c.id === kandidatId);
             if(cIndex !== -1) {
@@ -568,19 +540,14 @@
             }
 
             Swal.fire({
-                icon: 'success',
-                title: 'Terima Kasih!',
-                text: 'Suara Anda berhasil direkam.',
-                showConfirmButton: false,
-                timer: 2000
+                icon: 'success', title: 'Terima Kasih!', text: 'Suara Anda berhasil direkam.',
+                showConfirmButton: false, timer: 2000
             }).then(() => {
-                localStorage.removeItem("activeVoter"); // Auto logout voter
+                localStorage.removeItem("activeVoter");
                 window.location.reload();
             });
         }
 
-
-        // ================= ADMIN DASHBOARD =================
         window.switchAdminTab = function(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
@@ -598,14 +565,14 @@
             if(tabId === 'quickCount') updateChartAndStats();
         }
 
-        // --- Kandidat Logic ---
+        // --- KANDIDAT LOGIC ---
         window.showKandidatModal = function(id = null) {
             document.getElementById('formKandidatData').reset();
             document.getElementById('kFotoBase64').value = '';
             
             if(id) {
                 const c = JSON.parse(localStorage.getItem(STORAGE_KANDIDAT)).find(x => x.id === id);
-                document.getElementById('modalKandidatTitle').textContent = 'Edit Data Paslon';
+                document.getElementById('modalKandidatTitle').innerHTML = '<i data-lucide="edit-3" class="w-5 h-5 text-amber-500"></i> Edit Data Paslon';
                 document.getElementById('kandidatId').value = c.id;
                 document.getElementById('kNoUrut').value = c.noUrut;
                 document.getElementById('kKetua').value = c.ketua;
@@ -614,10 +581,11 @@
                 document.getElementById('kMisi').value = c.misi;
                 if(c.foto) document.getElementById('kFotoBase64').value = c.foto;
             } else {
-                document.getElementById('modalKandidatTitle').textContent = 'Tambah Paslon Baru';
+                document.getElementById('modalKandidatTitle').innerHTML = '<i data-lucide="plus-circle" class="w-5 h-5 text-amber-500"></i> Tambah Paslon Baru';
                 document.getElementById('kandidatId').value = '';
             }
             document.getElementById('modalKandidat').classList.remove('hidden');
+            lucide.createIcons();
         }
 
         window.closeKandidatModal = function() {
@@ -629,7 +597,7 @@
             const newKandidat = {
                 id: id || Date.now().toString(),
                 noUrut: parseInt(document.getElementById('kNoUrut').value),
-                foto: document.getElementById('kFotoBase64').value || "", // Mengambil string Base64 dari hidden input
+                foto: document.getElementById('kFotoBase64').value || "",
                 ketua: document.getElementById('kKetua').value,
                 wakil: document.getElementById('kWakil').value,
                 visi: document.getElementById('kVisi').value,
@@ -686,14 +654,15 @@
                         <p class="text-xs text-slate-600 line-clamp-3 mb-2"><strong>Visi:</strong> ${c.visi}</p>
                     </div>
                     <div class="p-4 bg-slate-50 border-t border-slate-100 flex gap-2 justify-end mt-auto">
-                        <button onclick="showKandidatModal('${c.id}')" class="px-3 py-1.5 bg-blue-100 text-blue-600 rounded text-xs font-semibold hover:bg-blue-200">Edit</button>
-                        <button onclick="hapusKandidat('${c.id}')" class="px-3 py-1.5 bg-red-100 text-red-600 rounded text-xs font-semibold hover:bg-red-200">Hapus</button>
+                        <button onclick="showKandidatModal('${c.id}')" class="px-3 py-1.5 bg-blue-100 text-blue-700 rounded text-xs font-bold hover:bg-blue-200 flex items-center gap-1 shadow-sm transition-colors"><i data-lucide="edit-2" class="w-3 h-3"></i> Edit</button>
+                        <button onclick="hapusKandidat('${c.id}')" class="px-3 py-1.5 bg-red-100 text-red-700 rounded text-xs font-bold hover:bg-red-200 flex items-center gap-1 shadow-sm transition-colors"><i data-lucide="trash-2" class="w-3 h-3"></i> Hapus</button>
                     </div>
                 </div>
             `).join('');
+            lucide.createIcons();
         }
 
-        // --- Pemilih Logic ---
+        // --- PEMILIH LOGIC ---
         function generateToken() {
             return Math.random().toString(36).substring(2, 8).toUpperCase();
         }
@@ -707,14 +676,12 @@
                 const data = new Uint8Array(e.target.result);
                 const workbook = XLSX.read(data, {type: 'array'});
                 const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                // Force header to read exactly as in template
                 const rows = XLSX.utils.sheet_to_json(firstSheet, {defval: ""}); 
                 
                 let pemilihBaru = [];
                 let validCount = 0;
 
                 rows.forEach(row => {
-                    // Cari key yang mengandung kata NIS/NIP, Nama, Kelas terlepas dari case
                     const keys = Object.keys(row);
                     const nisKey = keys.find(k => k.toLowerCase().includes('nis') || k.toLowerCase().includes('nip'));
                     const namaKey = keys.find(k => k.toLowerCase().includes('nama'));
@@ -739,17 +706,16 @@
                     renderAdminPemilih();
                     Swal.fire('Berhasil', `${validCount} data pemilih berhasil diimpor.`, 'success');
                 } else {
-                    Swal.fire('Gagal', 'Tidak ada data valid ditemukan. Pastikan format kolom sesuai (NIS/NIP, Nama Lengkap, Kelas).', 'error');
+                    Swal.fire('Gagal', 'Tidak ada data valid ditemukan. Pastikan format kolom sesuai.', 'error');
                 }
             };
             reader.readAsArrayBuffer(file);
-            event.target.value = ''; // reset input
+            event.target.value = ''; 
         }
 
         window.clearSemuaPemilih = function() {
             Swal.fire({
-                title: 'Hapus SEMUA Data Pemilih?',
-                text: "Tindakan ini tidak bisa dibatalkan!",
+                title: 'Hapus SEMUA Data Pemilih?', text: "Tindakan ini tidak bisa dibatalkan!",
                 icon: 'error', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Ya, Kosongkan'
             }).then((result) => {
                 if(result.isConfirmed) {
@@ -763,6 +729,53 @@
             let p = JSON.parse(localStorage.getItem(STORAGE_PEMILIH)).filter(x => x.id !== id);
             localStorage.setItem(STORAGE_PEMILIH, JSON.stringify(p));
             renderAdminPemilih();
+        }
+
+        window.editPemilih = function(id) {
+            let pemilihList = JSON.parse(localStorage.getItem(STORAGE_PEMILIH));
+            const pIndex = pemilihList.findIndex(x => x.id === id);
+            if (pIndex === -1) return;
+            const p = pemilihList[pIndex];
+
+            Swal.fire({
+                title: 'Edit Data Pemilih',
+                html: `
+                    <div class="space-y-4 mt-4 text-left">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">NIS / NIP</label>
+                            <input id="editNis" class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-200 outline-none" value="${p.nis}">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Nama Lengkap</label>
+                            <input id="editNama" class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-200 outline-none" value="${p.nama}">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Kelas</label>
+                            <input id="editKelas" class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-200 outline-none" value="${p.kelas}">
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Simpan Perubahan',
+                confirmButtonColor: '#1e3a8a',
+                cancelButtonText: 'Batal',
+                preConfirm: () => {
+                    return {
+                        nis: document.getElementById('editNis').value.trim(),
+                        nama: document.getElementById('editNama').value.trim(),
+                        kelas: document.getElementById('editKelas').value.trim()
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    pemilihList[pIndex].nis = result.value.nis;
+                    pemilihList[pIndex].nama = result.value.nama;
+                    pemilihList[pIndex].kelas = result.value.kelas;
+                    localStorage.setItem(STORAGE_PEMILIH, JSON.stringify(pemilihList));
+                    renderAdminPemilih();
+                    Swal.fire({icon: 'success', title: 'Data Diperbarui', showConfirmButton: false, timer: 1500});
+                }
+            });
         }
 
         function renderAdminPemilih() {
@@ -784,15 +797,16 @@
                             ${p.status === 'sudah' ? 'SUDAH MEMILIH' : 'BELUM'}
                         </span>
                     </td>
-                    <td class="py-3 px-4 border-b text-center">
-                        <button onclick="hapusPemilih('${p.id}')" class="text-red-500 hover:text-red-700 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    <td class="py-3 px-4 border-b text-center w-24">
+                        <button onclick="editPemilih('${p.id}')" class="text-blue-500 hover:text-blue-700 p-1 bg-blue-50 rounded" title="Edit Data"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                        <button onclick="hapusPemilih('${p.id}')" class="text-red-500 hover:text-red-700 p-1 bg-red-50 rounded ml-1" title="Hapus"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                     </td>
                 </tr>
             `).join('');
             lucide.createIcons();
         }
 
-        // --- Chart & Stats ---
+        // --- STATS & CHART ---
         function updateChartAndStats() {
             const pemilih = JSON.parse(localStorage.getItem(STORAGE_PEMILIH));
             const candidates = JSON.parse(localStorage.getItem(STORAGE_KANDIDAT)).sort((a,b) => a.noUrut - b.noUrut);
@@ -818,20 +832,19 @@
                     datasets: [{
                         label: 'Perolehan Suara',
                         data: labels.length > 0 ? dataSuara : [0],
-                        backgroundColor: '#f59e0b', // amber-500
+                        backgroundColor: '#f59e0b',
                         borderRadius: 8,
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    responsive: true, maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
                 }
             });
         }
 
-        // ================= CETAK LAPORAN =================
+        // --- CETAK LAPORAN ---
         function generateKopSurat() {
             return `
                 <div class="flex items-center justify-between border-b-4 border-slate-900 pb-4 mb-6">
@@ -853,7 +866,6 @@
             const total = pemilih.length;
             const sudah = pemilih.filter(p => p.status === 'sudah').length;
             
-            // Cari Pemenang
             let pemenang = null;
             let maxSuara = -1;
             candidates.forEach(c => {
@@ -903,15 +915,12 @@
 
         window.cetakDaftarHadir = function() {
             const pemilih = JSON.parse(localStorage.getItem(STORAGE_PEMILIH));
-            
-            // Bagi menjadi beberapa halaman (Misal 30 baris per halaman)
             const rowsPerPage = 35;
             let pages = [];
             for(let i=0; i<pemilih.length; i+=rowsPerPage) {
                 pages.push(pemilih.slice(i, i+rowsPerPage));
             }
-
-            if(pages.length === 0) pages = [[]]; // Minimal 1 halaman kosong
+            if(pages.length === 0) pages = [[]];
 
             let html = '';
             pages.forEach((page, pageIndex) => {
