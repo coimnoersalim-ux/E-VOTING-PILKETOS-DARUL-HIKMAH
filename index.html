@@ -27,6 +27,18 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
+        /* Background Resmi Flag Watermark */
+        .bg-resmi {
+            background-color: #0f172a; /* slate-900 */
+            background-image: linear-gradient(135deg, 
+                rgba(220, 38, 38, 0.15) 0%,   /* Red tint */
+                rgba(220, 38, 38, 0.05) 45%, 
+                rgba(255, 255, 255, 0.05) 55%, 
+                rgba(255, 255, 255, 0.15) 100% /* White tint */
+            );
+            background-attachment: fixed;
+        }
+
         /* Print Media Query */
         @media print {
             @page { margin: 1cm; }
@@ -63,37 +75,37 @@
     <div id="app-ui" class="min-h-screen">
         
         <!-- 1. VIEW: LOGIN PEMILIH -->
-        <div id="view-voter-login" class="hidden min-h-screen flex-col items-center justify-center bg-slate-900 relative overflow-hidden transition-all duration-300 p-6">
-            <!-- Background Decoration -->
-            <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-amber-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
-            <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+        <div id="view-voter-login" class="hidden min-h-screen flex-col items-center justify-center bg-resmi relative overflow-hidden transition-all duration-300 p-6">
+            <!-- Additional Ambient Glows -->
+            <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-amber-500 rounded-full mix-blend-screen filter blur-[100px] opacity-20"></div>
+            <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-500 rounded-full mix-blend-screen filter blur-[100px] opacity-20"></div>
             
             <div class="z-10 bg-white/10 backdrop-blur-md p-8 md:p-12 rounded-3xl shadow-2xl max-w-md w-full border border-white/20 text-center">
-                <!-- LOGO SEKOLAH & KPO -->
-                <div class="flex justify-center items-center gap-4 mb-4">
-                    <img src="logo_sekolah.png" alt="Logo MTs" onerror="this.src='https://placehold.co/80/ffffff/000000?text=MTs'" class="w-20 h-20 md:w-24 md:h-24 object-contain bg-white rounded-full p-1 shadow-lg border-2 border-slate-300">
-                    <img src="image.png" alt="Logo KPO" onerror="this.onerror=null; this.src='https://placehold.co/150x150/f59e0b/1e293b?text=KPO'" class="w-20 h-20 md:w-24 md:h-24 object-contain bg-white rounded-full p-1 shadow-lg border-2 border-amber-500">
+                <!-- DUA LOGO BERDAMPINGAN -->
+                <div class="flex justify-center items-center gap-6 mb-6">
+                    <img src="logo_sekolah.png" alt="Logo MTs" onerror="this.src='https://placehold.co/150x150/ffffff/000000?text=MTs'" class="w-20 h-20 md:w-24 md:h-24 object-contain bg-white rounded-full p-1.5 shadow-lg border-2 border-slate-300 transform hover:scale-105 transition-transform">
+                    <img src="image.png" alt="Logo KPO" onerror="this.onerror=null; this.src='https://placehold.co/150x150/f59e0b/1e293b?text=KPO'" class="w-20 h-20 md:w-24 md:h-24 object-contain bg-white rounded-full p-1.5 shadow-lg border-2 border-amber-500 transform hover:scale-105 transition-transform">
                 </div>
                 
                 <h2 class="text-3xl font-bold text-white mb-1 tracking-tight">Portal E-Voting</h2>
-                <p class="text-amber-400 text-sm font-medium mb-8 uppercase tracking-widest">KPO MTs Darul Hikmah</p>
+                <p class="text-amber-400 text-sm font-bold mb-8 uppercase tracking-widest drop-shadow-md">KPO MTs Darul Hikmah</p>
                 
                 <form onsubmit="handleVoterLogin(event)" class="space-y-5">
                     <div class="text-left">
-                        <label class="block text-sm font-bold text-slate-300 mb-1">Nomor Induk (NIS/NIP)</label>
-                        <input type="text" id="voter-nis" placeholder="Masukkan NIS Anda" class="w-full font-medium p-4 bg-white/90 border border-transparent rounded-xl focus:ring-4 focus:ring-amber-500/50 outline-none transition-all text-slate-900" required>
+                        <label class="block text-sm font-bold text-slate-200 mb-1 drop-shadow-sm">Nomor Induk (NIS/NIP)</label>
+                        <input type="text" id="voter-nis" placeholder="Masukkan NIS Anda" class="w-full font-medium p-4 bg-white/95 border border-transparent rounded-xl focus:ring-4 focus:ring-amber-500/50 outline-none transition-all text-slate-900 shadow-inner" required>
                     </div>
                     <div class="text-left">
-                        <label class="block text-sm font-bold text-slate-300 mb-1">Token Rahasia</label>
-                        <input type="text" id="voter-token" placeholder="6 Digit Token" class="w-full uppercase font-mono font-bold tracking-widest p-4 bg-white/90 border border-transparent rounded-xl focus:ring-4 focus:ring-amber-500/50 outline-none transition-all text-slate-900" required maxlength="6">
+                        <label class="block text-sm font-bold text-slate-200 mb-1 drop-shadow-sm">Token Rahasia</label>
+                        <input type="text" id="voter-token" placeholder="6 Digit Token" class="w-full uppercase font-mono font-bold tracking-widest p-4 bg-white/95 border border-transparent rounded-xl focus:ring-4 focus:ring-amber-500/50 outline-none transition-all text-slate-900 shadow-inner" required maxlength="6">
                     </div>
-                    <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-black py-4 rounded-xl shadow-lg transition-all mt-4 text-lg">
+                    <button type="submit" class="w-full bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-black py-4 rounded-xl shadow-lg hover:shadow-xl transition-all mt-4 text-lg">
                         MASUK BILIK SUARA
                     </button>
                 </form>
 
-                <div class="mt-8 border-t border-white/10 pt-6">
-                    <button onclick="switchView('admin-login')" class="text-slate-400 hover:text-white text-sm font-medium transition-colors">
+                <div class="mt-8 border-t border-white/20 pt-6">
+                    <button onclick="switchView('admin-login')" class="text-slate-300 hover:text-white text-sm font-semibold transition-colors">
                         <i class="fa-solid fa-user-shield mr-1"></i> Akses Panitia (Admin)
                     </button>
                 </div>
@@ -101,21 +113,21 @@
         </div>
 
         <!-- 2. VIEW: LOGIN ADMIN -->
-        <div id="view-admin-login" class="hidden min-h-screen bg-slate-900 flex-col items-center justify-center relative overflow-hidden p-6">
-            <button onclick="switchView('voter-login')" class="absolute top-6 left-6 text-slate-400 hover:text-white font-semibold z-20 transition-colors"><i class="fa-solid fa-arrow-left mr-2"></i> Kembali ke Portal</button>
+        <div id="view-admin-login" class="hidden min-h-screen bg-resmi flex-col items-center justify-center relative overflow-hidden p-6">
+            <button onclick="switchView('voter-login')" class="absolute top-6 left-6 text-slate-300 hover:text-white font-semibold z-20 transition-colors"><i class="fa-solid fa-arrow-left mr-2"></i> Kembali ke Portal</button>
             
-            <div class="z-10 bg-white p-8 md:p-12 rounded-3xl shadow-xl max-w-md w-full border border-slate-200 text-center">
-                <!-- LOGO SEKOLAH & KPO -->
-                <div class="flex justify-center items-center gap-4 mb-4">
-                    <img src="logo_sekolah.png" alt="Logo MTs" onerror="this.src='https://placehold.co/80/ffffff/000000?text=MTs'" class="w-16 h-16 md:w-20 md:h-20 object-contain bg-white rounded-full p-1 shadow-lg border-2 border-slate-300">
-                    <img src="image.png" alt="Logo KPO" onerror="this.onerror=null; this.src='https://placehold.co/150x150/1e293b/f8fafc?text=Admin'" class="w-16 h-16 md:w-20 md:h-20 object-contain bg-white rounded-full p-1 shadow-lg border-2 border-slate-900">
+            <div class="z-10 bg-white p-8 md:p-12 rounded-3xl shadow-2xl max-w-md w-full border border-slate-200 text-center">
+                <!-- DUA LOGO BERDAMPINGAN -->
+                <div class="flex justify-center items-center gap-4 mb-6">
+                    <img src="logo_sekolah.png" alt="Logo MTs" onerror="this.src='https://placehold.co/150x150/ffffff/000000?text=MTs'" class="w-16 h-16 md:w-20 md:h-20 object-contain bg-white rounded-full p-1 shadow-md border border-slate-300">
+                    <img src="image.png" alt="Logo KPO" onerror="this.onerror=null; this.src='https://placehold.co/150x150/1e293b/f8fafc?text=Admin'" class="w-16 h-16 md:w-20 md:h-20 object-contain bg-white rounded-full p-1 shadow-md border border-slate-900">
                 </div>
                 
-                <h2 class="text-2xl font-bold text-slate-800 mb-2">Otorisasi Panitia</h2>
-                <p class="text-slate-500 text-sm mb-8">Masukkan PIN Keamanan KPO</p>
+                <h2 class="text-2xl font-bold text-slate-800 mb-1">Otorisasi Panitia</h2>
+                <p class="text-slate-500 text-sm mb-8 font-medium">Masukkan PIN Keamanan KPO</p>
                 
                 <form onsubmit="handleAdminLogin(event)">
-                    <input type="password" id="admin-pin" placeholder="••••••" class="w-full text-center text-2xl tracking-[0.5em] font-bold p-4 border border-slate-300 rounded-xl mb-6 focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-slate-800" required>
+                    <input type="password" id="admin-pin" placeholder="••••••" class="w-full text-center text-2xl tracking-[0.5em] font-bold p-4 border border-slate-300 rounded-xl mb-6 focus:ring-4 focus:ring-slate-900/20 focus:border-slate-900 outline-none transition-all text-slate-800 bg-slate-50" required>
                     <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-xl shadow-lg transition-all">MASUK SISTEM</button>
                 </form>
             </div>
@@ -126,15 +138,19 @@
             <!-- Sidebar -->
             <aside class="w-full md:w-72 bg-slate-900 text-white flex flex-col shadow-2xl z-20 md:h-full">
                 <div class="p-6 border-b border-slate-800 text-center flex flex-row md:flex-col items-center justify-between md:justify-center">
-                    <div class="flex items-center md:flex-col">
-                        <img src="image.png" alt="Logo KPO" onerror="this.onerror=null; this.src='https://placehold.co/150x150/f59e0b/1e293b?text=KPO'" class="w-12 h-12 md:w-16 md:h-16 object-contain bg-white rounded-full p-1 md:mx-auto md:mb-3 shadow-sm border-2 border-amber-500 mr-3 md:mr-0">
+                    <div class="flex flex-col items-center w-full">
+                        <!-- DUA LOGO BERDAMPINGAN -->
+                        <div class="flex items-center gap-3 mb-3">
+                            <img src="logo_sekolah.png" alt="Logo MTs" onerror="this.src='https://placehold.co/150x150/ffffff/000000?text=MTs'" class="w-10 h-10 md:w-14 md:h-14 object-contain bg-white rounded-full p-1 shadow-sm border-2 border-slate-300">
+                            <img src="image.png" alt="Logo KPO" onerror="this.onerror=null; this.src='https://placehold.co/150x150/f59e0b/1e293b?text=KPO'" class="w-10 h-10 md:w-14 md:h-14 object-contain bg-white rounded-full p-1 shadow-sm border-2 border-amber-500">
+                        </div>
                         <div class="text-left md:text-center">
                             <span class="block text-lg md:text-xl font-bold tracking-tight text-white mb-1">PANITIA KPO</span>
-                            <p class="text-[10px] md:text-xs text-amber-400 font-medium uppercase">Periode 2026/2027</p>
+                            <p class="text-[10px] md:text-xs text-amber-400 font-bold uppercase tracking-wider">Periode 2026/2027</p>
                         </div>
                     </div>
                     <!-- Mobile Menu Toggle -->
-                    <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-white p-2">
+                    <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-white p-2 absolute right-4">
                         <i class="fa-solid fa-bars text-2xl"></i>
                     </button>
                 </div>
@@ -155,7 +171,7 @@
                 </nav>
                 
                 <div class="p-4 border-t border-slate-800 hidden md:block" id="admin-nav-footer">
-                    <button onclick="logoutAdmin()" class="w-full flex items-center justify-center px-4 py-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-xl font-bold transition-all">
+                    <button onclick="logout()" class="w-full flex items-center justify-center px-4 py-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-xl font-bold transition-all">
                         <i class="fa-solid fa-right-from-bracket mr-2"></i> KELUAR
                     </button>
                 </div>
@@ -207,28 +223,28 @@
                             <form onsubmit="handleAddPaslon(event)" class="space-y-4">
                                 <div>
                                     <label class="block text-xs font-bold text-slate-600 mb-1">Nomor Urut</label>
-                                    <input type="number" id="form-paslon-no" class="w-full p-2.5 border rounded-lg bg-slate-50" required>
+                                    <input type="number" id="form-paslon-no" class="w-full p-2.5 border rounded-lg bg-slate-50 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none" required>
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-slate-600 mb-1">Nama Ketua</label>
-                                    <input type="text" id="form-paslon-ketua" class="w-full p-2.5 border rounded-lg bg-slate-50" required>
+                                    <input type="text" id="form-paslon-ketua" class="w-full p-2.5 border rounded-lg bg-slate-50 focus:border-amber-500 outline-none" required>
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-slate-600 mb-1">Nama Wakil</label>
-                                    <input type="text" id="form-paslon-wakil" class="w-full p-2.5 border rounded-lg bg-slate-50" required>
+                                    <input type="text" id="form-paslon-wakil" class="w-full p-2.5 border rounded-lg bg-slate-50 focus:border-amber-500 outline-none" required>
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-slate-600 mb-1">Visi</label>
-                                    <textarea id="form-paslon-visi" class="w-full p-2.5 border rounded-lg bg-slate-50 h-20 text-sm" required></textarea>
+                                    <textarea id="form-paslon-visi" class="w-full p-2.5 border rounded-lg bg-slate-50 h-20 text-sm focus:border-amber-500 outline-none" required></textarea>
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-slate-600 mb-1">Misi</label>
-                                    <textarea id="form-paslon-misi" class="w-full p-2.5 border rounded-lg bg-slate-50 h-20 text-sm" required></textarea>
+                                    <textarea id="form-paslon-misi" class="w-full p-2.5 border rounded-lg bg-slate-50 h-20 text-sm focus:border-amber-500 outline-none" required></textarea>
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-slate-600 mb-1">Upload Foto Paslon (Wajib)</label>
                                     <input type="file" id="form-paslon-foto" accept="image/*" class="w-full p-2.5 border rounded-lg bg-slate-50" required>
-                                    <p class="text-[10px] text-slate-400 mt-1">Pilih file gambar dari perangkat Anda (JPG/PNG).</p>
+                                    <p class="text-[10px] text-red-500 mt-1 font-bold">* Rekomendasi Portrait 3x4 atau 4x6 agar wajah presisi.</p>
                                 </div>
                                 <button type="submit" class="w-full bg-slate-900 text-white font-bold py-3 rounded-xl hover:bg-slate-800 transition-colors">Simpan Paslon</button>
                             </form>
@@ -252,11 +268,11 @@
                         </div>
                         <div class="flex flex-wrap gap-2 w-full xl:w-auto">
                             <label class="flex-1 xl:flex-none text-center cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-bold transition-colors shadow-sm flex items-center justify-center">
-                                <i class="fa-solid fa-file-excel mr-2"></i> Import
+                                <i class="fa-solid fa-file-excel mr-2"></i> Import Excel
                                 <input type="file" id="excel-upload" accept=".xlsx, .xls" class="hidden" onchange="handleExcelUpload(event)">
                             </label>
                             <button onclick="clearVoters()" class="flex-1 xl:flex-none bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 px-4 py-2.5 rounded-xl font-bold transition-colors shadow-sm flex justify-center items-center">
-                                <i class="fa-solid fa-trash-can mr-2"></i> Reset
+                                <i class="fa-solid fa-trash-can mr-2"></i> Reset Data
                             </button>
                         </div>
                     </div>
@@ -342,12 +358,14 @@
         <div id="view-voter-dashboard" class="hidden min-h-screen bg-slate-100 flex-col">
             <!-- Header -->
             <header class="bg-slate-900 text-white p-4 shadow-md sticky top-0 z-20">
-                <div class="max-w-6xl mx-auto flex justify-between items-center">
-                    <div class="flex items-center">
-                        <img src="image.png" alt="Logo KPO" onerror="this.onerror=null; this.src='https://placehold.co/150x150/f59e0b/1e293b?text=KPO'" class="w-10 h-10 md:w-12 md:h-12 object-contain bg-white rounded-full p-1 border-2 border-amber-500 mr-3">
-                        <div>
-                            <h1 class="text-lg md:text-xl font-bold tracking-tight">BILIK SUARA E-VOTING</h1>
-                            <p class="text-[10px] md:text-xs text-amber-400 font-medium">MTs Darul Hikmah</p>
+                <div class="max-w-7xl mx-auto flex justify-between items-center w-full">
+                    <!-- DUA LOGO BERDAMPINGAN -->
+                    <div class="flex items-center gap-3">
+                        <img src="logo_sekolah.png" alt="Logo MTs" onerror="this.src='https://placehold.co/150x150/ffffff/000000?text=MTs'" class="w-10 h-10 md:w-12 md:h-12 object-contain bg-white rounded-full p-1 border-2 border-slate-300">
+                        <img src="image.png" alt="Logo KPO" onerror="this.onerror=null; this.src='https://placehold.co/150x150/f59e0b/1e293b?text=KPO'" class="w-10 h-10 md:w-12 md:h-12 object-contain bg-white rounded-full p-1 border-2 border-amber-500">
+                        <div class="ml-1">
+                            <h1 class="text-lg md:text-xl font-bold tracking-tight leading-tight">BILIK SUARA E-VOTING</h1>
+                            <p class="text-[10px] md:text-xs text-amber-400 font-bold uppercase">MTs Darul Hikmah</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-4">
@@ -355,12 +373,14 @@
                             <p class="text-sm font-bold text-amber-400" id="active-voter-name">Nama Pemilih</p>
                             <p class="text-xs text-slate-300" id="active-voter-info">NIS • Kelas</p>
                         </div>
-                        <button onclick="logoutUser()" class="bg-white/10 hover:bg-red-500 px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition-colors">Keluar</button>
+                        <button onclick="logout()" class="bg-white/10 hover:bg-red-500 px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition-colors">
+                            <i class="fa-solid fa-right-from-bracket md:mr-1"></i> <span class="hidden md:inline">Keluar</span>
+                        </button>
                     </div>
                 </div>
             </header>
 
-            <main class="flex-1 p-4 md:p-8 max-w-6xl mx-auto w-full">
+            <main class="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full">
                 <!-- Status Sudah Memilih -->
                 <div id="voter-status-voted" class="hidden bg-white p-8 md:p-12 rounded-3xl shadow-xl text-center max-w-2xl mx-auto mt-10 border border-green-100 mx-4">
                     <div class="w-20 h-20 md:w-24 md:h-24 bg-green-100 text-green-500 rounded-full flex items-center justify-center text-4xl md:text-5xl mx-auto mb-6">
@@ -368,17 +388,17 @@
                     </div>
                     <h2 class="text-2xl md:text-3xl font-black text-slate-800 mb-2">Terima Kasih!</h2>
                     <p class="text-slate-600 text-base md:text-lg mb-8">Anda telah menggunakan hak suara. Partisipasi Anda menentukan masa depan madrasah.</p>
-                    <button onclick="logoutUser()" class="bg-slate-900 text-white font-bold px-8 py-3 rounded-xl hover:bg-slate-800 transition-colors w-full sm:w-auto">Selesai & Keluar</button>
+                    <button onclick="logout()" class="bg-slate-900 text-white font-bold px-8 py-3 rounded-xl hover:bg-slate-800 transition-colors w-full sm:w-auto">Selesai & Keluar Aplikasi</button>
                 </div>
 
                 <!-- Status Belum Memilih (Grid Paslon) -->
                 <div id="voter-status-voting" class="hidden">
-                    <div class="text-center mb-10">
+                    <div class="text-center mb-10 mt-4">
                         <h2 class="text-2xl md:text-3xl font-black text-slate-800 mb-2">Tentukan Pilihan Anda</h2>
                         <p class="text-slate-500 text-sm md:text-base">Pilih satu pasangan calon yang menurut Anda paling pantas.</p>
                     </div>
                     
-                    <div id="voting-paslon-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                    <div id="voting-paslon-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
                         <!-- Diisi via JS -->
                     </div>
                 </div>
@@ -400,8 +420,11 @@
         <!-- 2. Print Daftar Hadir -->
         <div id="print-hadir" class="hidden">
             <div class="kop-surat">
-                <!-- Print Logo -->
-                <img src="image.png" onerror="this.style.display='none'" class="w-20 h-20 object-contain bg-white rounded-full p-1 mx-auto mb-2 border-2 border-black" alt="Logo">
+                <!-- DUA LOGO BERDAMPINGAN PRINT -->
+                <div style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 10px;">
+                    <img src="logo_sekolah.png" onerror="this.style.display='none'" style="width: 70px; height: 70px; object-fit: contain; border: 1px solid #000; padding: 2px; border-radius: 50%;" alt="MTs">
+                    <img src="image.png" onerror="this.style.display='none'" style="width: 70px; height: 70px; object-fit: contain; border: 1px solid #000; padding: 2px; border-radius: 50%;" alt="KPO">
+                </div>
                 <h1>DAFTAR HADIR PEMILIH TETAP (DPT)</h1>
                 <h2>E-VOTING KPO MTs DARUL HIKMAH</h2>
                 <p>Periode 2026/2027</p>
@@ -425,8 +448,11 @@
         <!-- 3. Print Berita Acara -->
         <div id="print-berita-acara" class="hidden">
             <div class="kop-surat">
-                <!-- Print Logo -->
-                <img src="image.png" onerror="this.style.display='none'" class="w-20 h-20 object-contain bg-white rounded-full p-1 mx-auto mb-2 border-2 border-black" alt="Logo">
+                <!-- DUA LOGO BERDAMPINGAN PRINT -->
+                <div style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 10px;">
+                    <img src="logo_sekolah.png" onerror="this.style.display='none'" style="width: 75px; height: 75px; object-fit: contain; border: 1px solid #000; padding: 2px; border-radius: 50%;" alt="MTs">
+                    <img src="image.png" onerror="this.style.display='none'" style="width: 75px; height: 75px; object-fit: contain; border: 1px solid #000; padding: 2px; border-radius: 50%;" alt="KPO">
+                </div>
                 <h1>KOMISI PEMILIHAN OSIS (KPO)</h1>
                 <h2>MADRASAH TSANAWIYAH DARUL HIKMAH</h2>
                 <p>Periode 2026/2027</p>
@@ -482,7 +508,7 @@
         // --- DATA & STATE MANAGEMENT (localStorage) ---
         const DB_CANDIDATES = 'pilketos_candidates';
         const DB_VOTERS = 'pilketos_voters';
-        const DB_SESSION = 'pilketos_session'; // Untuk menjaga login saat di-refresh
+        const DB_SESSION = 'pilketos_session'; 
         
         let candidates = JSON.parse(localStorage.getItem(DB_CANDIDATES)) || [];
         let voters = JSON.parse(localStorage.getItem(DB_VOTERS)) || [];
@@ -495,9 +521,8 @@
             localStorage.setItem(DB_VOTERS, JSON.stringify(voters));
         }
 
-        // --- INITIALIZATION (Pencegah Logout saat Refresh) ---
+        // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Setup Mobile Menu Toggle
             const mobileMenuBtn = document.getElementById('mobile-menu-btn');
             const adminNavMenu = document.getElementById('admin-nav-menu');
             const adminNavFooter = document.getElementById('admin-nav-footer');
@@ -510,7 +535,6 @@
                 });
             }
 
-            // Memeriksa Sesi
             if (activeSession) {
                 if (activeSession.type === 'admin') {
                     switchView('admin-dashboard');
@@ -519,11 +543,11 @@
                     if (activeVoter) {
                         switchView('voter-dashboard');
                     } else {
-                        logoutUser(); // Data pemilih hilang/terhapus, paksa logout
+                        logout(); // Paksa keluar jika data hilang
                     }
                 }
             } else {
-                switchView('voter-login'); // Default
+                switchView('voter-login'); 
             }
         });
 
@@ -541,7 +565,7 @@
                 targetView.classList.add('flex');
             } else {
                 targetView.classList.remove('hidden');
-                targetView.classList.add('flex'); // Pakai flex untuk dashboard
+                targetView.classList.add('flex'); 
             }
 
             if (viewId === 'admin-dashboard') {
@@ -569,7 +593,6 @@
             if(tabId === 'pemilih') renderAdminPemilih();
             if(tabId === 'beritaacara') renderBeritaAcaraPreview();
 
-            // Auto-hide menu on mobile after click
             if (window.innerWidth < 768) {
                 document.getElementById('admin-nav-menu').classList.add('hidden');
                 document.getElementById('admin-nav-menu').classList.remove('flex');
@@ -584,10 +607,8 @@
             const pin = document.getElementById('admin-pin').value;
             if (pin === '123456') {
                 document.getElementById('admin-pin').value = '';
-                // Simpan Sesi
                 localStorage.setItem(DB_SESSION, JSON.stringify({ type: 'admin' }));
                 activeSession = { type: 'admin' };
-                
                 switchView('admin-dashboard');
                 Swal.fire({ title: 'Akses Diterima', text: 'Selamat datang di Panel Admin', icon: 'success', timer: 1500, showConfirmButton: false });
             } else {
@@ -606,7 +627,6 @@
                 document.getElementById('voter-nis').value = '';
                 document.getElementById('voter-token').value = '';
                 
-                // Simpan Sesi
                 localStorage.setItem(DB_SESSION, JSON.stringify({ type: 'voter', nis: voter.nis }));
                 activeSession = { type: 'voter', nis: voter.nis };
 
@@ -616,28 +636,27 @@
             }
         }
 
-        function logoutUser() {
-            // Fungsi logout untuk admin dan voter
-            if (activeSession && activeSession.type === 'admin') {
-                Swal.fire({
-                    title: 'Keluar?', text: "Sesi admin akan diakhiri.", icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Keluar', confirmButtonColor: '#d33'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        performLogout();
-                    }
-                });
-            } else {
-                performLogout();
-            }
-        }
-
-        function performLogout() {
-            localStorage.removeItem(DB_SESSION);
-            localStorage.removeItem("adminLoggedIn");
-            localStorage.removeItem("activeVoter");
-            activeSession = null;
-            activeVoter = null;
-            window.location.reload();
+        // Universal Logout Function
+        window.logout = function() {
+            Swal.fire({
+                title: 'Keluar Aplikasi?', 
+                text: "Anda akan mengakhiri sesi keamanan saat ini.", 
+                icon: 'warning', 
+                showCancelButton: true, 
+                confirmButtonText: 'Ya, Keluar', 
+                confirmButtonColor: '#d33'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Bersihkan hanya cache login, JANGAN sentuh data paslon & DPT
+                    localStorage.removeItem(DB_SESSION);
+                    localStorage.removeItem("adminLoggedIn");
+                    localStorage.removeItem("activeVoter");
+                    activeSession = null;
+                    activeVoter = null;
+                    // Paksa reload halaman penuh
+                    window.location.reload();
+                }
+            });
         }
 
         // --- ADMIN: PASLON ---
@@ -702,21 +721,23 @@
             }
 
             candidates.forEach(c => {
-                // Menambahkan onerror fallback pada gambar paslon
                 container.innerHTML += `
-                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col shadow-sm">
-                        <div class="h-40 md:h-48 bg-slate-200 relative">
-                            <img src="${c.foto}" onerror="this.onerror=null; this.src='https://placehold.co/400x400/1e293b/f8fafc?text=No+Photo'" class="w-full h-full object-cover">
-                            <div class="absolute top-2 left-2 w-10 h-10 bg-white rounded-xl text-slate-900 font-black text-xl flex items-center justify-center shadow-lg">${c.no}</div>
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col shadow-sm pb-0">
+                        <div class="p-4 bg-slate-50 flex justify-center items-center relative h-64 border-b">
+                            <!-- Premium Gold Border untuk Admin Panel -->
+                            <div class="bg-gradient-to-b from-amber-300 to-amber-600 rounded-2xl p-1.5 shadow-xl w-40 h-52 relative">
+                                <img src="${c.foto}" onerror="this.onerror=null; this.src='https://placehold.co/400x400/1e293b/f8fafc?text=No+Photo'" class="w-full h-full object-cover object-top rounded-xl border border-white/50 bg-white">
+                                <div class="absolute -top-3 -right-3 w-10 h-10 bg-slate-900 border-2 border-amber-400 rounded-full text-amber-400 font-black text-xl flex items-center justify-center shadow-lg">${c.no}</div>
+                            </div>
                         </div>
-                        <div class="p-4 flex-1">
+                        <div class="p-4 flex-1 text-center">
                             <h4 class="font-bold text-slate-800 text-lg leading-tight mb-1">${c.ketua}</h4>
                             <p class="text-amber-600 text-sm font-semibold mb-4">& ${c.wakil}</p>
-                            <button onclick="Swal.fire({title: 'Visi Misi Paslon ${c.no}', html: '<div style=\\'text-align:left; font-size: 14px;\\'><b>Visi:</b><br>${c.visi.replace(/\\n/g, '<br>')}<br><br><b>Misi:</b><br>${c.misi.replace(/\\n/g, '<br>')}</div>', confirmButtonColor: '#1e293b'})" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg mb-4 transition-colors w-full sm:w-auto">Lihat Visi Misi</button>
+                            <button onclick="Swal.fire({title: 'Visi Misi Paslon ${c.no}', html: '<div style=\\'text-align:left; font-size: 14px;\\'><b>Visi:</b><br>${c.visi.replace(/\\n/g, '<br>')}<br><br><b>Misi:</b><br>${c.misi.replace(/\\n/g, '<br>')}</div>', confirmButtonColor: '#1e293b'})" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg mb-2 transition-colors w-full">Lihat Visi Misi</button>
                         </div>
-                        <div class="border-t p-3 bg-slate-50 flex justify-between items-center">
-                            <span class="text-sm font-bold text-slate-500"><i class="fa-solid fa-vote-yea mr-1"></i> ${c.votes} Suara</span>
-                            <button onclick="deletePaslon('${c.id}')" class="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded-lg"><i class="fa-solid fa-trash-can"></i></button>
+                        <div class="border-t p-3 bg-slate-100 flex justify-between items-center">
+                            <span class="text-sm font-bold text-slate-600"><i class="fa-solid fa-vote-yea mr-1 text-amber-500"></i> ${c.votes} Suara</span>
+                            <button onclick="deletePaslon('${c.id}')" class="text-red-500 hover:text-red-700 bg-white shadow-sm border p-2 rounded-lg"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </div>
                 `;
@@ -725,7 +746,7 @@
 
         // --- ADMIN: PEMILIH (EXCEL) ---
         function generateToken() {
-            return Math.random().toString(36).substring(2, 8).toUpperCase(); // 6 chars token
+            return Math.random().toString(36).substring(2, 8).toUpperCase(); 
         }
 
         function handleExcelUpload(event) {
@@ -764,7 +785,7 @@
                     
                     saveData();
                     renderAdminPemilih();
-                    event.target.value = ''; // reset input
+                    event.target.value = ''; 
                     Swal.fire('Berhasil', `Berhasil mengimpor ${added} data pemilih.`, 'success');
                 } catch(err) {
                     console.error("Import Error: ", err);
@@ -840,7 +861,7 @@
                     datasets: [{
                         label: 'Perolehan Suara',
                         data: data,
-                        backgroundColor: '#f59e0b', // amber-500
+                        backgroundColor: '#f59e0b', 
                         borderRadius: 6,
                     }]
                 },
@@ -911,7 +932,7 @@
                 tbody.innerHTML = '';
                 voters.forEach((v, i) => {
                     const tr = document.createElement('tr');
-                    if (i > 0 && i % 25 === 0) tr.classList.add('page-break'); // Break page every 25 rows
+                    if (i > 0 && i % 25 === 0) tr.classList.add('page-break'); 
                     tr.innerHTML = `
                         <td style="text-align:center;">${i+1}</td>
                         <td style="text-align:center;">${v.nis}</td>
@@ -950,9 +971,8 @@
 
         // --- VOTER: BILIK SUARA ---
         function renderVoterDashboard() {
-            if (!activeVoter) return performLogout();
+            if (!activeVoter) return logout();
 
-            // Refresh data terbaru dari database lokal
             activeVoter = voters.find(v => v.nis === activeVoter.nis);
 
             document.getElementById('active-voter-name').innerText = activeVoter.nama;
@@ -974,24 +994,27 @@
                 }
 
                 candidates.forEach(c => {
-                    // Fallback gambar untuk kandidat di voter dashboard
                     grid.innerHTML += `
-                        <div class="bg-white rounded-3xl overflow-hidden shadow-lg border border-slate-200 transform transition-all hover:-translate-y-2 hover:shadow-xl flex flex-col">
-                            <div class="h-56 md:h-64 relative bg-slate-100">
-                                <img src="${c.foto}" onerror="this.onerror=null; this.src='https://placehold.co/400x400/1e293b/f8fafc?text=Foto+Kandidat'" class="w-full h-full object-cover">
-                                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
-                                <div class="absolute top-4 right-4 bg-amber-500 text-slate-900 w-12 h-12 rounded-full flex items-center justify-center text-2xl font-black shadow-lg">${c.no}</div>
-                                <div class="absolute bottom-4 left-4 right-4">
-                                    <h3 class="text-xl md:text-2xl font-bold text-white leading-tight shadow-sm">${c.ketua}</h3>
-                                    <p class="text-amber-400 text-sm md:text-base font-semibold">Wakil: ${c.wakil}</p>
+                        <div class="bg-white rounded-3xl overflow-hidden shadow-xl border border-slate-200 transform transition-all hover:-translate-y-2 hover:shadow-2xl flex flex-col">
+                            
+                            <!-- Premium Gold Header with Photo (object-cover object-top prevents cropping faces) -->
+                            <div class="bg-slate-900 p-8 pb-10 relative flex justify-center items-end" style="min-height: 280px; background-image: radial-gradient(circle at top, #1e293b, #0f172a);">
+                                <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+                                <div class="bg-gradient-to-b from-amber-300 to-amber-600 rounded-2xl p-1.5 shadow-2xl w-48 h-64 relative z-10 transform translate-y-6">
+                                    <img src="${c.foto}" onerror="this.onerror=null; this.src='https://placehold.co/400x600/ffffff/000000?text=Kandidat'" class="w-full h-full object-cover object-top rounded-xl bg-white border border-white">
+                                    <div class="absolute -top-4 -right-4 bg-slate-900 border-2 border-amber-400 text-amber-400 w-14 h-14 rounded-full flex items-center justify-center text-3xl font-black shadow-lg">${c.no}</div>
                                 </div>
                             </div>
-                            <div class="p-6 flex-1 flex flex-col">
-                                <button onclick="Swal.fire({title: 'Visi Misi Paslon ${c.no}', html: '<div style=\\'text-align:left; font-size:14px;\\'><b>Visi:</b><br>${c.visi.replace(/\\n/g, '<br>')}<br><br><b>Misi:</b><br>${c.misi.replace(/\\n/g, '<br>')}</div>', confirmButtonColor: '#1e293b'})" class="text-sm font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 py-3 rounded-xl mb-6 transition-colors w-full">
+
+                            <div class="p-6 pt-10 flex-1 flex flex-col text-center">
+                                <h3 class="text-2xl font-bold text-slate-800 leading-tight">${c.ketua}</h3>
+                                <p class="text-amber-600 font-bold mb-6 mt-1">Wakil: ${c.wakil}</p>
+
+                                <button onclick="Swal.fire({title: 'Visi Misi Paslon ${c.no}', html: '<div style=\\'text-align:left; font-size:14px;\\'><b>Visi:</b><br>${c.visi.replace(/\\n/g, '<br>')}<br><br><b>Misi:</b><br>${c.misi.replace(/\\n/g, '<br>')}</div>', confirmButtonColor: '#0f172a'})" class="text-sm font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 py-3 rounded-xl mb-6 transition-colors w-full border border-slate-200">
                                     <i class="fa-solid fa-book-open mr-2 text-amber-500"></i> Baca Visi & Misi
                                 </button>
                                 
-                                <button onclick="castVote('${c.id}', ${c.no})" class="mt-auto w-full bg-slate-900 hover:bg-slate-800 text-white text-lg font-black py-4 rounded-xl shadow-lg hover:shadow-xl transition-all border-b-4 border-slate-700 active:border-b-0 active:translate-y-1">
+                                <button onclick="castVote('${c.id}', ${c.no})" class="mt-auto w-full bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 text-white text-lg font-black py-4 rounded-xl shadow-lg transition-all border-b-4 border-slate-950 active:border-b-0 active:translate-y-1">
                                     <i class="fa-solid fa-check-to-slot mr-2 text-amber-500"></i> COBLOS PASLON ${c.no}
                                 </button>
                             </div>
@@ -1032,7 +1055,7 @@
                         icon: 'success',
                         confirmButtonColor: '#0f172a'
                     }).then(() => {
-                        renderVoterDashboard(); // Mengubah tampilan ke layar Terima Kasih
+                        renderVoterDashboard(); 
                         window.scrollTo(0,0);
                     });
                 }
