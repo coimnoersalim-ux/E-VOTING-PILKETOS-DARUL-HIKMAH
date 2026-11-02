@@ -69,8 +69,11 @@
             <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
             
             <div class="z-10 bg-white/10 backdrop-blur-md p-8 md:p-12 rounded-3xl shadow-2xl max-w-md w-full border border-white/20 text-center">
-                <!-- LOGO KPO -->
-                <img src="image.png" alt="Logo KPO" onerror="this.onerror=null; this.src='https://placehold.co/150x150/f59e0b/1e293b?text=KPO'" class="w-24 h-24 object-contain bg-white rounded-full p-1 mx-auto mb-4 shadow-lg border-2 border-amber-500">
+                <!-- LOGO SEKOLAH & KPO -->
+                <div class="flex justify-center items-center gap-4 mb-4">
+                    <img src="logo_sekolah.png" alt="Logo MTs" onerror="this.src='https://placehold.co/80/ffffff/000000?text=MTs'" class="w-20 h-20 md:w-24 md:h-24 object-contain bg-white rounded-full p-1 shadow-lg border-2 border-slate-300">
+                    <img src="image.png" alt="Logo KPO" onerror="this.onerror=null; this.src='https://placehold.co/150x150/f59e0b/1e293b?text=KPO'" class="w-20 h-20 md:w-24 md:h-24 object-contain bg-white rounded-full p-1 shadow-lg border-2 border-amber-500">
+                </div>
                 
                 <h2 class="text-3xl font-bold text-white mb-1 tracking-tight">Portal E-Voting</h2>
                 <p class="text-amber-400 text-sm font-medium mb-8 uppercase tracking-widest">KPO MTs Darul Hikmah</p>
@@ -102,8 +105,11 @@
             <button onclick="switchView('voter-login')" class="absolute top-6 left-6 text-slate-400 hover:text-white font-semibold z-20 transition-colors"><i class="fa-solid fa-arrow-left mr-2"></i> Kembali ke Portal</button>
             
             <div class="z-10 bg-white p-8 md:p-12 rounded-3xl shadow-xl max-w-md w-full border border-slate-200 text-center">
-                <!-- LOGO KPO -->
-                <img src="image.png" alt="Logo KPO" onerror="this.onerror=null; this.src='https://placehold.co/150x150/1e293b/f8fafc?text=Admin'" class="w-20 h-20 object-contain bg-white rounded-full p-1 mx-auto mb-4 shadow-lg border-2 border-slate-900">
+                <!-- LOGO SEKOLAH & KPO -->
+                <div class="flex justify-center items-center gap-4 mb-4">
+                    <img src="logo_sekolah.png" alt="Logo MTs" onerror="this.src='https://placehold.co/80/ffffff/000000?text=MTs'" class="w-16 h-16 md:w-20 md:h-20 object-contain bg-white rounded-full p-1 shadow-lg border-2 border-slate-300">
+                    <img src="image.png" alt="Logo KPO" onerror="this.onerror=null; this.src='https://placehold.co/150x150/1e293b/f8fafc?text=Admin'" class="w-16 h-16 md:w-20 md:h-20 object-contain bg-white rounded-full p-1 shadow-lg border-2 border-slate-900">
+                </div>
                 
                 <h2 class="text-2xl font-bold text-slate-800 mb-2">Otorisasi Panitia</h2>
                 <p class="text-slate-500 text-sm mb-8">Masukkan PIN Keamanan KPO</p>
@@ -220,9 +226,9 @@
                                     <textarea id="form-paslon-misi" class="w-full p-2.5 border rounded-lg bg-slate-50 h-20 text-sm" required></textarea>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-600 mb-1">URL Foto (Direct Link)</label>
-                                    <input type="url" id="form-paslon-foto" placeholder="https://..." class="w-full p-2.5 border rounded-lg bg-slate-50">
-                                    <p class="text-[10px] text-slate-400 mt-1">Gunakan link langsung (contoh dari imgur.com atau postimages.org)</p>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">Upload Foto Paslon (Wajib)</label>
+                                    <input type="file" id="form-paslon-foto" accept="image/*" class="w-full p-2.5 border rounded-lg bg-slate-50" required>
+                                    <p class="text-[10px] text-slate-400 mt-1">Pilih file gambar dari perangkat Anda (JPG/PNG).</p>
                                 </div>
                                 <button type="submit" class="w-full bg-slate-900 text-white font-bold py-3 rounded-xl hover:bg-slate-800 transition-colors">Simpan Paslon</button>
                             </form>
@@ -627,9 +633,11 @@
 
         function performLogout() {
             localStorage.removeItem(DB_SESSION);
+            localStorage.removeItem("adminLoggedIn");
+            localStorage.removeItem("activeVoter");
             activeSession = null;
             activeVoter = null;
-            switchView('voter-login');
+            window.location.reload();
         }
 
         // --- ADMIN: PASLON ---
@@ -641,24 +649,34 @@
                 return Swal.fire('Gagal', 'Nomor urut sudah digunakan paslon lain.', 'error');
             }
 
-            const newCandidate = {
-                id: Date.now().toString(),
-                no: no,
-                ketua: document.getElementById('form-paslon-ketua').value,
-                wakil: document.getElementById('form-paslon-wakil').value,
-                visi: document.getElementById('form-paslon-visi').value,
-                misi: document.getElementById('form-paslon-misi').value,
-                foto: document.getElementById('form-paslon-foto').value || 'https://placehold.co/400x400/1e293b/f8fafc?text=Foto+Paslon',
-                votes: 0
-            };
-            
-            candidates.push(newCandidate);
-            candidates.sort((a, b) => a.no - b.no);
-            saveData();
-            
-            e.target.reset();
-            renderAdminPaslon();
-            Swal.fire({ title: 'Berhasil', text: 'Data paslon ditambahkan.', icon: 'success', timer: 1500, showConfirmButton: false });
+            const fileInput = document.getElementById('form-paslon-foto');
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const base64Foto = event.target.result;
+                    const newCandidate = {
+                        id: Date.now().toString(),
+                        no: no,
+                        ketua: document.getElementById('form-paslon-ketua').value,
+                        wakil: document.getElementById('form-paslon-wakil').value,
+                        visi: document.getElementById('form-paslon-visi').value,
+                        misi: document.getElementById('form-paslon-misi').value,
+                        foto: base64Foto,
+                        votes: 0
+                    };
+                    
+                    candidates.push(newCandidate);
+                    candidates.sort((a, b) => a.no - b.no);
+                    saveData();
+                    
+                    e.target.reset();
+                    renderAdminPaslon();
+                    Swal.fire({ title: 'Berhasil', text: 'Data paslon ditambahkan.', icon: 'success', timer: 1500, showConfirmButton: false });
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                Swal.fire('Gagal', 'Silakan pilih foto paslon terlebih dahulu.', 'warning');
+            }
         }
 
         function deletePaslon(id) {
