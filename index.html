@@ -11,11 +11,38 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:#f8fafc}
-.bg-resmi{background:#0f172a linear-gradient(135deg,rgba(220,38,38,.08) 50%,rgba(255,255,255,.06) 50%)}
+:root{--bd:#0a1a3f;--b1:#12306b;--b2:#2a4a9a}
+.bg-resmi{background:radial-gradient(circle at 15% 20%,rgba(255,255,255,.18),transparent 40%),linear-gradient(135deg,var(--bd) 0%,var(--b1) 55%,var(--b2) 100%)}
+.bg-brand{background:var(--b1)}.bg-brand-d{background:var(--bd)}.hover\:bg-brand-d:hover{background:var(--bd)}.text-brand{color:var(--b1)}.bd-brand{border-color:var(--bd)}.bl-brand{border-color:rgba(255,255,255,.3)}
 .gold-border{padding:4px;background:linear-gradient(135deg,#fbbf24,#d97706 50%,#fef3c7);border-radius:1rem}
 .sb::-webkit-scrollbar{width:6px}.sb::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
 #printContainer{display:none}
-@media print{body{background:#fff!important}body>*:not(#printContainer){display:none!important}#printContainer{display:block!important}.page-break{page-break-before:always}}
+@page{size:A4;margin:12mm}
+.doc{font-family:'Times New Roman',Times,serif;color:#000;font-size:12pt;line-height:1.45}
+.kop{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:4px double #000;padding-bottom:8px;margin-bottom:14px}
+.kop img{width:80px;height:80px;object-fit:contain}
+.kop .t{flex:1;text-align:center;line-height:1.25}
+.doc h3{text-align:center;font-weight:bold;font-size:13pt;margin:0 0 10px;text-decoration:underline}
+.tb{width:100%;border-collapse:collapse;table-layout:fixed}
+.tb th,.tb td{border:1px solid #000;padding:3px 6px;font-size:10.5pt;vertical-align:middle;overflow-wrap:anywhere}
+.tb th{background:#e5e7eb;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.tb thead{display:table-header-group}.tb tr{page-break-inside:avoid}
+.hadir td{height:7mm}
+.c{text-align:center}
+.pg{page-break-after:always}.pg:last-child{page-break-after:auto}
+.pgno{text-align:right;font-size:9pt;margin-top:4px}
+.kgrid{display:grid;grid-template-columns:1fr 1fr;gap:4mm}
+.kartu{border:1.5px dashed #333;border-radius:8px;height:50mm;box-sizing:border-box;padding:3mm 4mm;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;font-family:Arial,sans-serif;color:#000;page-break-inside:avoid}
+.kh{display:flex;align-items:center;gap:6px;border-bottom:2px solid var(--b1);padding-bottom:2mm}
+.kh img{width:11mm;height:11mm;object-fit:contain}
+.kh div{flex:1;text-align:center;font-size:8pt;line-height:1.2}
+.kh b{font-size:10pt}
+.kb{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:9pt;line-height:1.35}
+.kb .nm{flex:1;min-width:0;overflow-wrap:anywhere}
+.kb .tk{border:1.5px solid #000;border-radius:6px;padding:3px 8px;text-align:center;font-size:7pt}
+.kb .tk b{display:block;font-size:15pt;letter-spacing:2px;font-family:'Courier New',monospace}
+.kf{font-size:6.5pt;text-align:center;color:#444}
+@media print{body{background:#fff!important}body>*:not(#printContainer){display:none!important}#printContainer{display:block!important;padding:0!important;min-height:0!important}}
 </style>
 </head>
 <body class="text-slate-800">
@@ -24,49 +51,49 @@ body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background
 <div id="loginScreen" class="min-h-screen w-full flex items-center justify-center bg-resmi fixed inset-0 z-50 overflow-y-auto">
  <div class="w-full max-w-md p-8 m-4 bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20">
   <div class="flex justify-center items-center gap-4 mb-6">
-   <img src="logo_sekolah.png" alt="Logo MTs" class="h-20 object-contain" onerror="this.style.display='none'">
-   <img src="image.png" alt="Logo KPO" class="h-24 object-contain" onerror="this.style.display='none'">
+   <img src="logo_sekolah.png" alt="Logo MTs" class="h-24 w-24 object-contain" onerror="this.style.display='none'">
+   <img src="image.png" alt="Logo KPO" class="h-24 w-24 object-contain" onerror="this.style.display='none'">
   </div>
   <div class="text-center mb-8">
    <h1 class="text-2xl font-bold text-white mb-2">E-Voting Pilketos Darhik</h1>
-   <p class="text-slate-300 text-sm">MTs Darul Hikmah Periode 2026/2027</p>
+   <p class="text-white/90 text-sm">MTs Darul Hikmah Periode 2026/2027</p>
   </div>
   <div id="formPemilih">
    <h2 class="text-lg font-semibold text-amber-400 mb-4 text-center">Login Pemilih (Siswa/Guru)</h2>
    <form onsubmit="loginPemilih(event)" class="space-y-4">
-    <div><label class="block text-sm text-slate-300 mb-1">NISN / NIP</label>
+    <div><label class="block text-sm text-white font-medium mb-1">NISN / NIP</label>
      <input id="voterNis" required autocomplete="off" class="w-full px-4 py-3 rounded-xl bg-white/90 outline-none focus:ring-2 focus:ring-amber-400 font-semibold" placeholder="Masukkan NIS/NIP Anda"></div>
-    <div><label class="block text-sm text-slate-300 mb-1">Token Akses</label>
+    <div><label class="block text-sm text-white font-medium mb-1">Token Akses</label>
      <input id="voterToken" type="password" required autocomplete="off" class="w-full px-4 py-3 rounded-xl bg-white/90 outline-none focus:ring-2 focus:ring-amber-400 font-semibold tracking-widest uppercase" placeholder="••••••"></div>
     <button class="w-full bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3 rounded-xl transition flex justify-center items-center gap-2"><i data-lucide="log-in" class="w-5 h-5"></i> MASUK BILIK SUARA</button>
    </form>
-   <div class="mt-8 text-center"><button onclick="toggleLogin()" class="text-sm text-slate-400 hover:text-white">Akses Admin (KPO)</button></div>
+   <div class="mt-8 text-center"><button onclick="toggleLogin()" class="w-full py-2.5 rounded-xl bg-white text-brand font-bold shadow-lg hover:bg-white/90 flex items-center justify-center gap-2"><i data-lucide="shield-check" class="w-5 h-5"></i> Akses Admin (KPO)</button></div>
   </div>
   <div id="formAdmin" class="hidden">
    <h2 class="text-lg font-semibold text-white mb-4 text-center">Login Admin (KPO)</h2>
    <form onsubmit="loginAdmin(event)" class="space-y-4">
     <input id="adminPin" type="password" required class="w-full px-4 py-3 rounded-xl bg-white/90 outline-none focus:ring-2 focus:ring-blue-400 font-semibold text-center tracking-widest" placeholder="Masukkan PIN Admin">
-    <button class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2"><i data-lucide="shield-check" class="w-5 h-5 text-amber-400"></i> MASUK DASHBOARD</button>
+    <button class="w-full bg-white/20 hover:bg-white/30 border border-white/40 text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2"><i data-lucide="shield-check" class="w-5 h-5 text-amber-400"></i> MASUK DASHBOARD</button>
    </form>
-   <div class="mt-6 text-center"><button onclick="toggleLogin()" class="text-sm text-slate-400 hover:text-white inline-flex items-center gap-1"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke Login Pemilih</button></div>
+   <div class="mt-6 text-center"><button onclick="toggleLogin()" class="text-sm text-white font-semibold underline hover:text-amber-200 inline-flex items-center gap-1"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke Login Pemilih</button></div>
   </div>
  </div>
 </div>
 
 <!-- ADMIN -->
 <div id="adminDashboard" class="hidden h-screen w-full flex bg-slate-50 overflow-hidden">
- <aside class="w-16 md:w-64 bg-slate-900 text-white flex flex-col shadow-2xl z-10 shrink-0">
-  <div class="p-3 md:p-6 flex flex-col items-center border-b border-slate-800">
+ <aside class="w-16 md:w-64 bg-brand text-white flex flex-col shadow-2xl z-10 shrink-0">
+  <div class="p-3 md:p-6 flex flex-col items-center border-b bl-brand">
    <div class="flex items-center gap-2 mb-3">
-    <img src="logo_sekolah.png" class="h-8 w-8 md:h-10 md:w-10 object-contain" onerror="this.style.display='none'">
-    <img src="image.png" class="hidden md:block h-12 w-12 object-contain bg-white rounded-full p-1" onerror="this.style.display='none'">
+    <img src="logo_sekolah.png" class="h-10 w-10 md:h-14 md:w-14 object-contain" onerror="this.style.display='none'">
+    <img src="image.png" class="hidden md:block md:h-14 md:w-14 object-contain" onerror="this.style.display='none'">
    </div>
-   <h2 class="hidden md:block text-lg font-bold text-amber-400">PANITIA KPO</h2>
-   <p class="hidden md:block text-xs text-slate-400 text-center mt-1">MTs Darul Hikmah Cikatomas</p>
+   <h2 class="hidden md:block text-lg font-bold text-white">PANITIA KPO</h2>
+   <p class="hidden md:block text-xs text-white/80 text-center mt-1">MTs Darul Hikmah Cikatomas</p>
   </div>
   <nav id="nav" class="flex-1 p-2 md:p-4 space-y-2 overflow-y-auto"></nav>
-  <div class="p-2 md:p-4 border-t border-slate-800">
-   <button onclick="logout()" class="w-full flex items-center justify-center md:justify-start gap-3 px-3 py-3 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/10"><i data-lucide="log-out" class="w-5 h-5"></i><span class="hidden md:inline">Keluar</span></button>
+  <div class="p-2 md:p-4 border-t bl-brand">
+   <button onclick="logout()" class="w-full flex items-center justify-center md:justify-start gap-3 px-3 py-3 rounded-lg text-sm font-medium text-white hover:bg-red-500"><i data-lucide="log-out" class="w-5 h-5"></i><span class="hidden md:inline">Keluar</span></button>
   </div>
  </aside>
  <div class="flex-1 flex flex-col overflow-hidden">
@@ -119,11 +146,12 @@ body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background
    </section>
 
    <section id="tab-cetak" class="tab hidden">
-    <div class="max-w-3xl mx-auto bg-white p-6 rounded-2xl shadow-sm border">
+    <div class="max-w-5xl mx-auto bg-white p-6 rounded-2xl shadow-sm border">
      <h3 class="text-lg font-bold mb-6 flex items-center gap-2"><i data-lucide="printer" class="w-5 h-5 text-amber-500"></i> Cetak & Ekspor Laporan</h3>
-     <div class="grid md:grid-cols-3 gap-4 text-center">
+     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 text-center">
       <div class="border p-5 rounded-xl"><h4 class="font-bold mb-2">Berita Acara</h4><p class="text-sm text-slate-500 mb-4">Hasil perolehan suara.</p><button onclick="cetakBA()" class="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm w-full">Cetak</button></div>
       <div class="border p-5 rounded-xl"><h4 class="font-bold mb-2">Daftar Hadir</h4><p class="text-sm text-slate-500 mb-4">Daftar pemilih + token.</p><button onclick="cetakHadir()" class="bg-amber-500 text-slate-900 font-bold px-4 py-2 rounded-lg text-sm w-full">Cetak</button></div>
+      <div class="border p-5 rounded-xl"><h4 class="font-bold mb-2">Kartu Pemilih</h4><p class="text-sm text-slate-500 mb-4">Kartu berisi token, 10 per lembar A4.</p><button onclick="cetakKartu()" class="bg-brand text-white px-4 py-2 rounded-lg text-sm w-full">Cetak</button></div>
       <div class="border p-5 rounded-xl"><h4 class="font-bold mb-2">Ekspor Excel</h4><p class="text-sm text-slate-500 mb-4">Hasil + status pemilih.</p><button onclick="eksporHasil()" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm w-full">Unduh</button></div>
      </div>
     </div>
@@ -133,9 +161,10 @@ body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background
     <div class="max-w-3xl mx-auto bg-white p-6 rounded-2xl shadow-sm border space-y-4">
      <h3 class="text-lg font-bold flex items-center gap-2"><i data-lucide="settings" class="w-5 h-5 text-amber-500"></i> Pengaturan</h3>
      <div class="flex flex-wrap items-center justify-between gap-3 border p-4 rounded-xl"><div><b>Status pemungutan suara</b><p class="text-sm text-slate-500">Saat ditutup, pemilih tidak bisa login.</p></div><button id="btnStatus" onclick="toggleStatus()" class="px-4 py-2 rounded-lg text-sm font-bold"></button></div>
+     <div class="flex flex-wrap items-center justify-between gap-3 border p-4 rounded-xl"><div><b>Warna tampilan</b><p class="text-sm text-slate-500">Pilih warna tema aplikasi.</p></div><div id="themeBtns" class="flex flex-wrap gap-2"></div></div>
      <div class="flex flex-wrap items-center justify-between gap-3 border p-4 rounded-xl"><div><b>Ganti PIN Admin</b><p class="text-sm text-slate-500">Disimpan dalam bentuk hash.</p></div><button onclick="gantiPin()" class="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm">Ganti PIN</button></div>
      <div class="flex flex-wrap items-center justify-between gap-3 border p-4 rounded-xl"><div><b>Cadangkan & pulihkan data</b><p class="text-sm text-slate-500">Data tersimpan di browser perangkat ini. Cadangkan sebelum &amp; sesudah acara.</p></div>
-      <div class="flex gap-2"><button onclick="backup()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">Cadangkan</button>
+      <div class="flex gap-2"><button onclick="backup()" class="bg-brand text-white px-4 py-2 rounded-lg text-sm">Cadangkan</button>
       <label class="bg-slate-100 px-4 py-2 rounded-lg text-sm cursor-pointer">Pulihkan<input type="file" accept=".json" class="hidden" onchange="restore(event)"></label></div></div>
      <div class="flex flex-wrap items-center justify-between gap-3 border border-red-200 bg-red-50 p-4 rounded-xl"><div><b class="text-red-700">Reset suara</b><p class="text-sm text-red-600">Nol-kan semua suara &amp; status pemilih.</p></div><button onclick="resetSuara()" class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm">Reset</button></div>
     </div>
@@ -146,12 +175,12 @@ body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background
 
 <!-- BILIK SUARA -->
 <div id="voterDashboard" class="hidden min-h-screen w-full flex flex-col bg-slate-50">
- <header class="bg-slate-900 text-white sticky top-0 z-40 border-b-4 border-amber-400">
+ <header class="bg-brand text-white sticky top-0 z-40 border-b-4 border-amber-400">
   <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
    <div class="flex items-center gap-4">
-    <img src="logo_sekolah.png" class="h-10 w-10 object-contain" onerror="this.style.display='none'">
-    <img src="image.png" class="h-10 w-10 object-contain bg-white rounded-full p-0.5" onerror="this.style.display='none'">
-    <div><h1 class="text-lg md:text-xl font-bold">BILIK SUARA E-VOTING</h1><p class="text-amber-400 text-xs font-semibold tracking-widest uppercase">MTs Darul Hikmah</p></div>
+    <img src="logo_sekolah.png" class="h-12 w-12 object-contain" onerror="this.style.display='none'">
+    <img src="image.png" class="h-12 w-12 object-contain" onerror="this.style.display='none'">
+    <div><h1 class="text-lg md:text-xl font-bold">BILIK SUARA E-VOTING</h1><p class="text-amber-300 text-xs font-semibold tracking-widest uppercase">MTs Darul Hikmah</p></div>
    </div>
    <div class="flex items-center gap-6">
     <div class="text-right"><p id="vName" class="font-bold text-sm uppercase"></p><p id="vNis" class="text-slate-400 text-xs"></p></div>
@@ -203,10 +232,14 @@ const toast=(t,i='success')=>Swal.fire({icon:i,title:t,showConfirmButton:false,t
 let chart=null,idle=null,curTab='quickCount';
 const TABS=[['quickCount','bar-chart-2','Quick Count'],['kandidat','users','Data Paslon'],['pemilih','user-check','Data Pemilih'],['cetak','printer','Cetak Laporan'],['pengaturan','settings','Pengaturan']];
 
+const THEMES={dongker:['#0a1a3f','#12306b','#2a4a9a','Biru Dongker'],ungu:['#6d28d9','#7c3aed','#a78bfa','Ungu'],oranye:['#c2410c','#ea580c','#fb923c','Oranye'],marun:['#9f1239','#be123c','#fb7185','Marun'],biru:['#1d4ed8','#2563eb','#60a5fa','Biru'],hijau:['#047857','#059669','#34d399','Hijau'],teal:['#0f766e','#0d9488','#2dd4bf','Teal'],ungu:['#6d28d9','#7c3aed','#a78bfa','Ungu'],marun:['#9f1239','#be123c','#fb7185','Marun']};
+function applyTheme(n,save){const t=THEMES[n]||THEMES.dongker,r=document.documentElement.style;r.setProperty('--bd',t[0]);r.setProperty('--b1',t[1]);r.setProperty('--b2',t[2]);if(save){const c=cfg();c.theme=n;put(C,c)}}
 function genToken(used){const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let t;
  do{t=[...crypto.getRandomValues(new Uint8Array(6))].map(b=>a[b%a.length]).join('')}while(used&&used.has(t));return t}
 
 document.addEventListener('DOMContentLoaded',()=>{
+ applyTheme(cfg().theme);
+ $('themeBtns').innerHTML=Object.entries(THEMES).map(([k,t])=>`<button onclick="applyTheme('${k}',1)" class="px-3 py-2 rounded-lg text-white text-sm font-bold" style="background:${t[1]}">${t[3]}</button>`).join('');
  $('nav').innerHTML=TABS.map(([id,ic,l])=>`<button id="bt-${id}" onclick="tab('${id}')" class="w-full flex items-center justify-center md:justify-start gap-3 px-3 py-3 rounded-lg text-sm font-medium"><i data-lucide="${ic}" class="w-5 h-5"></i><span class="hidden md:inline">${l}</span></button>`).join('');
  $('kFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
   r.onload=ev=>{const im=new Image();im.onload=()=>{const s=Math.min(1,500/im.height),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;
@@ -234,7 +267,7 @@ async function loginAdmin(e){e.preventDefault();const pin=$('adminPin').value,c=
 function showAdmin(){$('loginScreen').classList.add('hidden');$('adminDashboard').classList.remove('hidden');tab('quickCount')}
 
 function tab(id){curTab=id;document.querySelectorAll('.tab').forEach(e=>e.classList.add('hidden'));$('tab-'+id).classList.remove('hidden');
- TABS.forEach(([t])=>{$('bt-'+t).className='w-full flex items-center justify-center md:justify-start gap-3 px-3 py-3 rounded-lg text-sm font-medium '+(t===id?'bg-amber-500/20 text-amber-400 border border-amber-500/30':'text-slate-400 hover:bg-slate-800 hover:text-white')});
+ TABS.forEach(([t])=>{$('bt-'+t).className='w-full flex items-center justify-center md:justify-start gap-3 px-3 py-3 rounded-lg text-sm font-medium '+(t===id?'bg-white text-brand shadow':'text-white hover:bg-white/20')});
  refresh();icons()}
 
 function refresh(){status();if(curTab==='quickCount')stats();if(curTab==='kandidat')renderK();if(curTab==='pemilih')renderPemilih();icons()}
@@ -266,9 +299,9 @@ function showVoter(){const v=get(P,[]).find(p=>p.id===sessionStorage.getItem('vo
  const cs=cands();
  $('bilik').innerHTML=cs.length?cs.map(c=>`
  <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm flex flex-col overflow-hidden border hover:-translate-y-2 transition">
-  <div class="bg-slate-900 p-8 flex justify-center relative">
-   <div class="absolute top-4 right-4 bg-amber-500 w-10 h-10 rounded-full flex items-center justify-center font-black text-xl border-2 border-slate-900 z-10">${c.noUrut}</div>
-   <div class="w-48 h-64 gold-border bg-slate-800"><img src="${esc(c.foto)||''}" class="w-full h-full object-cover object-top rounded-xl bg-slate-200" onerror="this.removeAttribute('src')"></div>
+  <div class="bg-brand p-8 flex justify-center relative">
+   <div class="absolute top-4 right-4 bg-amber-500 w-10 h-10 rounded-full flex items-center justify-center font-black text-xl border-2 bd-brand z-10">${c.noUrut}</div>
+   <div class="w-48 h-64 gold-border bg-brand-d"><img src="${esc(c.foto)||''}" class="w-full h-full object-cover object-top rounded-xl bg-slate-200" onerror="this.removeAttribute('src')"></div>
   </div>
   <div class="p-6 text-center flex flex-col flex-grow">
    <h3 class="text-xl font-bold mb-1">${esc(c.ketua)}</h3><p class="text-sm text-slate-500 mb-4">Wakil: ${esc(c.wakil)}</p>
@@ -276,7 +309,7 @@ function showVoter(){const v=get(P,[]).find(p=>p.id===sessionStorage.getItem('vo
     <p class="font-bold text-amber-600 text-[11px] uppercase">Visi:</p><p class="mb-4 whitespace-pre-wrap">${esc(c.visi)}</p>
     <p class="font-bold text-amber-600 text-[11px] uppercase">Misi:</p><p class="whitespace-pre-wrap">${esc(c.misi)}</p>
    </div>
-   <button onclick="konfirmasi('${esc(c.id)}')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 mt-auto"><i data-lucide="check-square" class="w-5 h-5 text-amber-400"></i> COBLOS PASLON ${c.noUrut}</button>
+   <button onclick="konfirmasi('${esc(c.id)}')" class="w-full bg-brand hover:bg-brand-d text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 mt-auto"><i data-lucide="check-square" class="w-5 h-5 text-amber-400"></i> COBLOS PASLON ${c.noUrut}</button>
   </div></div>`).join(''):'<div class="text-center w-full py-20 text-slate-500 bg-white rounded-2xl shadow-sm">Belum ada paslon yang didaftarkan panitia.</div>';
  icons()}
 
@@ -382,29 +415,42 @@ function hasil(){const cs=cands(),mx=Math.max(0,...cs.map(c=>c.suara||0));return
 
 /* ---------- CETAK & EKSPOR ---------- */
 const tgl=()=>new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
-function kop(){return`<div class="flex items-center justify-between border-b-4 border-slate-900 pb-4 mb-6">
- <img src="logo_sekolah.png" style="width:80px;height:80px;object-fit:contain" onerror="this.style.display='none'">
- <div class="text-center flex-1 px-4"><h2 class="text-xl font-bold uppercase">KOMISI PEMILIHAN OSIS (KPO)</h2><h1 class="text-2xl font-black uppercase">MADRASAH TSANAWIYAH DARUL HIKMAH</h1>
- <p class="text-sm">Desa Gunungsari, Kecamatan Cikatomas, Kabupaten Tasikmalaya</p><p class="text-sm font-bold">Periode 2026/2027</p></div>
- <img src="image.png" style="width:90px;height:90px;object-fit:contain" onerror="this.style.display='none'"></div>`}
-function cetak(h){$('printContainer').innerHTML=h;window.print()}
+const hid="onerror=\"this.style.visibility='hidden'\"";
+function kop(){return`<div class="kop"><img src="logo_sekolah.png" ${hid}><div class="t"><div style="font-size:13pt;font-weight:bold">KOMISI PEMILIHAN OSIS (KPO)</div><div style="font-size:16pt;font-weight:bold">MADRASAH TSANAWIYAH DARUL HIKMAH</div><div style="font-size:10pt">Desa Gunungsari, Kecamatan Cikatomas, Kabupaten Tasikmalaya</div><div style="font-size:10pt;font-weight:bold">Periode 2026/2027</div></div><img src="image.png" ${hid}></div>`}
+function cetak(h){const pc=$('printContainer');pc.innerHTML=h;
+ Promise.all([...pc.querySelectorAll('img')].map(i=>i.complete?0:new Promise(r=>{i.onload=i.onerror=r}))).then(()=>setTimeout(()=>window.print(),150))}
+const ttd=()=>`<div style="margin-left:55%;text-align:center;margin-top:16px;page-break-inside:avoid"><p>Gunungsari, ${tgl()}<br>Ketua KPO MTs Darul Hikmah,</p><p style="margin-top:60px"><b><u>( ........................................ )</u></b></p></div>`;
 
 function cetakBA(){const {cs,top}=hasil(),ps=get(P,[]),tot=ps.length,sdh=ps.filter(p=>p.status==='sudah').length;
  const kesimpulan=top.length===1?`Berdasarkan perolehan suara terbanyak, Pasangan Calon <b>Nomor Urut ${top[0].noUrut} (${esc(top[0].ketua)} &amp; ${esc(top[0].wakil)})</b> ditetapkan sebagai Ketua dan Wakil Ketua OSIS Terpilih Periode 2026/2027.`
   :top.length>1?`Perolehan suara tertinggi <b>seri</b> antara Paslon Nomor ${top.map(t=>t.noUrut).join(' dan ')}. Panitia memutuskan tindak lanjut sesuai tata tertib pemilihan.`:'Belum ada suara masuk.';
- cetak(`${kop()}<h3 class="text-center text-lg font-bold underline mb-6">BERITA ACARA HASIL PEMILIHAN KETUA OSIS</h3>
- <p class="mb-4 text-justify">Berdasarkan hasil pemungutan suara elektronik (E-Voting), Panitia KPO MTs Darul Hikmah menyatakan rincian perolehan suara sebagai berikut:</p>
- <table class="w-full border-collapse mb-6 text-sm" border="1"><tr class="bg-slate-100"><th class="border p-2 w-16">No. Urut</th><th class="border p-2 text-left">Pasangan Calon</th><th class="border p-2 w-32">Suara</th></tr>
- ${cs.map(c=>`<tr><td class="border p-2 text-center font-bold">${c.noUrut}</td><td class="border p-2">Ketua: ${esc(c.ketua)}<br>Wakil: ${esc(c.wakil)}</td><td class="border p-2 text-center font-bold text-lg">${c.suara||0}</td></tr>`).join('')}</table>
- <div class="mb-8 border p-4"><p class="font-bold mb-1">Statistik Partisipasi:</p><ul class="list-disc pl-5 text-sm"><li>Daftar Pemilih Tetap (DPT): ${tot} orang</li><li>Suara masuk: ${sdh} suara</li><li>Partisipasi: ${tot?(sdh/tot*100).toFixed(1):0}%</li></ul></div>
- <p class="mb-12 text-justify">${kesimpulan}</p>
- <div class="flex justify-end pr-12"><div class="text-center"><p class="mb-16">Gunungsari, ${tgl()}<br>Ketua KPO MTs Darul Hikmah,</p><p class="font-bold underline">( ........................................ )</p></div></div>`)}
+ cetak(`<div class="doc">${kop()}<h3>BERITA ACARA HASIL PEMILIHAN KETUA OSIS</h3>
+ <p style="text-align:justify;margin-bottom:12px">Berdasarkan hasil pemungutan suara elektronik (E-Voting), Panitia KPO MTs Darul Hikmah menyatakan rincian perolehan suara sebagai berikut:</p>
+ <table class="tb" style="margin-bottom:14px"><thead><tr><th style="width:18mm">No. Urut</th><th>Pasangan Calon</th><th style="width:30mm">Suara</th></tr></thead><tbody>
+ ${cs.map(c=>`<tr><td class="c"><b>${c.noUrut}</b></td><td>Ketua: ${esc(c.ketua)}<br>Wakil: ${esc(c.wakil)}</td><td class="c"><b style="font-size:14pt">${c.suara||0}</b></td></tr>`).join('')}</tbody></table>
+ <table class="tb" style="width:auto;margin-bottom:14px"><tr><td>Daftar Pemilih Tetap (DPT)</td><td class="c" style="width:30mm">${tot} orang</td></tr><tr><td>Suara masuk</td><td class="c">${sdh} suara</td></tr><tr><td>Partisipasi</td><td class="c">${tot?(sdh/tot*100).toFixed(1):0}%</td></tr></table>
+ <p style="text-align:justify">${kesimpulan}</p>${ttd()}</div>`)}
 
-function cetakHadir(){const ps=get(P,[]).sort((a,b)=>a.kelas.localeCompare(b.kelas,'id')||a.nama.localeCompare(b.nama,'id')),n=35,pages=[];
+function cetakHadir(){const ps=get(P,[]).sort((a,b)=>a.kelas.localeCompare(b.kelas,'id')||a.nama.localeCompare(b.nama,'id')),n=28,pages=[];
  for(let i=0;i<ps.length;i+=n)pages.push(ps.slice(i,i+n));if(!pages.length)pages.push([]);
- cetak(pages.map((pg,pi)=>`<div class="${pi?'page-break':''}">${kop()}<h3 class="text-center text-lg font-bold mb-4">DAFTAR HADIR & TOKEN PEMILIH</h3>
- <table class="w-full border-collapse text-xs" border="1"><tr class="bg-slate-100"><th class="border p-1.5 w-10">No</th><th class="border p-1.5 w-32">NIS / NIP</th><th class="border p-1.5 text-left">Nama Lengkap</th><th class="border p-1.5 w-24">Kelas</th><th class="border p-1.5 w-24">Token</th><th class="border p-1.5 w-32">Tanda Tangan</th></tr>
- ${pg.map((p,i)=>{const g=pi*n+i+1;return`<tr><td class="border p-1.5 text-center">${g}</td><td class="border p-1.5 text-center">${esc(p.nis)}</td><td class="border p-1.5">${esc(p.nama)}</td><td class="border p-1.5 text-center">${esc(p.kelas)}</td><td class="border p-1.5 text-center font-mono font-bold">${p.token}</td><td class="border p-1.5 text-slate-400">${g}. ______</td></tr>`}).join('')}</table></div>`).join(''))}
+ const tot=pages.length+(pages[pages.length-1].length>18?1:0);
+ const foot=(i)=>`<div class="pgno">Halaman ${i} dari ${tot}</div>`;
+ let h=pages.map((pg,pi)=>`<div class="doc pg">${kop()}<h3>DAFTAR HADIR PEMILIH</h3>
+ <table class="tb hadir"><thead><tr><th style="width:12mm">No</th><th style="width:34mm">NIS / NIP</th><th>Nama Lengkap</th><th style="width:24mm">Kelas</th><th style="width:48mm">Tanda Tangan</th></tr></thead><tbody>
+ ${pg.map((p,i)=>{const g=pi*n+i+1;return`<tr><td class="c">${g}</td><td class="c">${esc(p.nis)}</td><td>${esc(p.nama)}</td><td class="c">${esc(p.kelas)}</td><td style="text-align:${g%2?'left':'right'};color:#666">${g}. ..........</td></tr>`}).join('')}</tbody></table>
+ ${pi===pages.length-1&&pg.length<=18?`<p style="margin-top:8px;font-size:10pt">Jumlah pemilih terdaftar: <b>${ps.length}</b> orang</p>${ttd()}`:''}${foot(pi+1)}</div>`).join('');
+ if(pages[pages.length-1].length>18)h+=`<div class="doc pg">${kop()}<p style="font-size:10pt">Jumlah pemilih terdaftar: <b>${ps.length}</b> orang</p>${ttd()}${foot(tot)}</div>`;
+ cetak(h)}
+
+async function cetakKartu(){const ps=get(P,[]);if(!ps.length)return Swal.fire('Belum ada pemilih','Import data pemilih terlebih dahulu.','info');
+ const kl=[...new Set(ps.map(p=>p.kelas))].sort((a,b)=>a.localeCompare(b,'id')),opts={'*':'Semua kelas / jabatan'};kl.forEach(k=>opts[k]=k);
+ const {value:v}=await Swal.fire({title:'Cetak Kartu Pemilih',input:'select',inputOptions:opts,inputValue:'*',showCancelButton:true,confirmButtonText:'Cetak',cancelButtonText:'Batal'});
+ if(!v)return;
+ const l=ps.filter(p=>v==='*'||p.kelas===v).sort((a,b)=>a.kelas.localeCompare(b.kelas,'id')||a.nama.localeCompare(b.nama,'id')),pages=[];
+ for(let i=0;i<l.length;i+=10)pages.push(l.slice(i,i+10));
+ cetak(pages.map(pg=>`<div class="pg"><div class="kgrid">${pg.map(p=>`<div class="kartu"><div class="kh"><img src="logo_sekolah.png" ${hid}><div><b>KARTU PEMILIH</b><br>PILKETOS MTs DARUL HIKMAH 2026/2027</div><img src="image.png" ${hid}></div>
+ <div class="kb"><div class="nm"><b>${esc(p.nama)}</b><br>NIS/NIP: ${esc(p.nis)}<br>Kelas: ${esc(p.kelas)}</div><div class="tk">TOKEN<b>${p.token}</b></div></div>
+ <div class="kf">Rahasiakan token Anda. Hanya berlaku untuk satu kali memilih.</div></div>`).join('')}</div></div>`).join(''))}
 
 function eksporHasil(){const wb=XLSX.utils.book_new(),ps=get(P,[]);
  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['No Urut','Ketua','Wakil','Suara'],...cands().map(c=>[c.noUrut,c.ketua,c.wakil,c.suara||0])]),'Hasil');
