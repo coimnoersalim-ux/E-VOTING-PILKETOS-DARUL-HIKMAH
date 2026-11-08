@@ -9,6 +9,9 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:#f8fafc}
 :root{--bd:#0a1a3f;--b1:#12306b;--b2:#2a4a9a}
@@ -43,10 +46,47 @@ body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background
 .kb .tk b{display:block;font-size:15pt;letter-spacing:2px;font-family:'Courier New',monospace}
 .kf{font-size:6.5pt;text-align:center;color:#444}
 @media print{body{background:#fff!important}body>*:not(#printContainer){display:none!important}#printContainer{display:block!important;padding:0!important;min-height:0!important}}
+
+/* ===== TAMPILAN BARU ===== */
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif!important;background:linear-gradient(160deg,#f1f5ff,#f8fafc 40%,#fff7ed)!important;background-attachment:fixed}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes fl{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-30px)}}
+.tab:not(.hidden){animation:up .35s ease}
+button{transition:all .2s}button:active{transform:scale(.97)}
+input,textarea,select{border-radius:14px!important}
+#loginScreen::before,#loginScreen::after{content:'';position:fixed;width:340px;height:340px;border-radius:50%;filter:blur(70px);opacity:.45;pointer-events:none;animation:fl 12s ease-in-out infinite}
+#loginScreen::before{background:#fbbf24;top:-80px;left:-60px}#loginScreen::after{background:var(--b2);bottom:-100px;right:-60px;animation-delay:-6s}
+#loginScreen>div{position:relative;z-index:1;border-radius:30px;background:rgba(255,255,255,.13);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.3);box-shadow:0 30px 80px -20px rgba(0,0,0,.5);animation:up .6s ease}
+#loginScreen input{border:0}
+aside{background:linear-gradient(180deg,var(--b1),var(--bd))!important;border-radius:0 28px 28px 0}
+#nav button{border-radius:16px!important}
+#adminDashboard header{background:rgba(255,255,255,.8);backdrop-filter:blur(12px);border:0;box-shadow:0 4px 24px -12px rgba(15,23,42,.2)}
+main .rounded-2xl{border:0!important;border-radius:24px!important;box-shadow:0 12px 36px -16px rgba(15,23,42,.18)!important}
+main .rounded-xl{border-radius:18px!important}
+#stats>div{position:relative;overflow:hidden;background:#fff;transition:transform .25s}
+#stats>div:hover{transform:translateY(-4px)}
+#stats>div::after{content:'';position:absolute;right:-24px;top:-24px;width:100px;height:100px;border-radius:50%;background:var(--b2);opacity:.12}
+.bg-slate-900{background:linear-gradient(135deg,var(--b1),var(--b2))!important;box-shadow:0 8px 20px -8px var(--b1)}
+.bg-amber-500{box-shadow:0 8px 20px -8px #f59e0b}
+#tab-cetak .border{border:0;background:linear-gradient(180deg,#fff,#f8fafc);box-shadow:0 8px 24px -14px rgba(15,23,42,.3);transition:transform .25s}
+#tab-cetak .border:hover{transform:translateY(-4px)}
+#kandidatGrid>div{border:0!important;border-radius:24px!important;box-shadow:0 12px 30px -14px rgba(15,23,42,.3);transition:transform .25s}
+#kandidatGrid>div:hover{transform:translateY(-4px)}
+#voterDashboard header{background:linear-gradient(120deg,var(--bd),var(--b1) 60%,var(--b2))!important}
+#bilik>div{border:0!important;border-radius:32px!important;box-shadow:0 24px 50px -22px rgba(15,23,42,.45)!important;animation:up .5s ease backwards}
+#bilik>div:hover{transform:translateY(-8px)!important}
+#bilik .bg-brand{background:linear-gradient(160deg,var(--b2),var(--bd))!important}
+#bilik button{border-radius:18px!important;background:linear-gradient(135deg,var(--b1),var(--b2))!important}
+#tbPemilih tr:hover{background:#f8fafc}
+.swal2-popup{border-radius:26px!important;font-family:inherit!important}
+.swal2-styled.swal2-confirm{border-radius:14px!important}
 </style>
 </head>
 <body class="text-slate-800">
 
+<div id="setup" class="hidden fixed inset-0 z-[60] bg-resmi flex items-center justify-center p-4 overflow-y-auto"><div class="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl">
+<h2 class="text-xl font-extrabold mb-1">Hubungkan Firebase dulu</h2><p class="text-sm text-slate-500 mb-4">Isi <b>FIREBASE_CONFIG</b> di bagian script file ini.</p>
+<ol class="list-decimal pl-5 space-y-2 text-sm text-slate-600"><li>Buka <b>console.firebase.google.com</b> → buat project.</li><li><b>Build → Realtime Database → Create Database</b> (lokasi Singapore, mode test).</li><li>Tab <b>Rules</b> → isi <code class="bg-slate-100 px-1 rounded">{"rules":{".read":true,".write":true}}</code> → Publish.</li><li><b>Project settings → Your apps → Web (&lt;/&gt;)</b> → salin <code>firebaseConfig</code> (termasuk databaseURL) ke file ini.</li></ol></div></div>
 <!-- LOGIN -->
 <div id="loginScreen" class="min-h-screen w-full flex items-center justify-center bg-resmi fixed inset-0 z-50 overflow-y-auto">
  <div class="w-full max-w-md p-8 m-4 bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20">
@@ -99,7 +139,7 @@ body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background
  <div class="flex-1 flex flex-col overflow-hidden">
   <header class="bg-white shadow-sm border-b px-4 md:px-8 py-4 flex justify-between items-center gap-4">
    <h2 class="text-base md:text-xl font-bold">Dashboard Pilketos MTs Darul Hikmah Cikatomas</h2>
-   <div id="statusPemilu" class="px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap"></div>
+   <div class="flex items-center gap-2"><span id="conn" class="hidden md:inline text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-100 text-slate-500">● Menyambung…</span><div id="statusPemilu" class="px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap"></div></div>
   </header>
   <main class="flex-1 overflow-y-auto p-4 md:p-8">
    <section id="tab-quickCount" class="tab hidden">
@@ -163,7 +203,7 @@ body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background
      <div class="flex flex-wrap items-center justify-between gap-3 border p-4 rounded-xl"><div><b>Status pemungutan suara</b><p class="text-sm text-slate-500">Saat ditutup, pemilih tidak bisa login.</p></div><button id="btnStatus" onclick="toggleStatus()" class="px-4 py-2 rounded-lg text-sm font-bold"></button></div>
      <div class="flex flex-wrap items-center justify-between gap-3 border p-4 rounded-xl"><div><b>Warna tampilan</b><p class="text-sm text-slate-500">Pilih warna tema aplikasi.</p></div><div id="themeBtns" class="flex flex-wrap gap-2"></div></div>
      <div class="flex flex-wrap items-center justify-between gap-3 border p-4 rounded-xl"><div><b>Ganti PIN Admin</b><p class="text-sm text-slate-500">Disimpan dalam bentuk hash.</p></div><button onclick="gantiPin()" class="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm">Ganti PIN</button></div>
-     <div class="flex flex-wrap items-center justify-between gap-3 border p-4 rounded-xl"><div><b>Cadangkan & pulihkan data</b><p class="text-sm text-slate-500">Data tersimpan di browser perangkat ini. Cadangkan sebelum &amp; sesudah acara.</p></div>
+     <div class="flex flex-wrap items-center justify-between gap-3 border p-4 rounded-xl"><div><b>Cadangkan & pulihkan data</b><p class="text-sm text-slate-500">Data tersimpan di Firebase dan tersinkron realtime. Cadangan JSON tetap berguna sebagai arsip.</p></div>
       <div class="flex gap-2"><button onclick="backup()" class="bg-brand text-white px-4 py-2 rounded-lg text-sm">Cadangkan</button>
       <label class="bg-slate-100 px-4 py-2 rounded-lg text-sm cursor-pointer">Pulihkan<input type="file" accept=".json" class="hidden" onchange="restore(event)"></label></div></div>
      <div class="flex flex-wrap items-center justify-between gap-3 border border-red-200 bg-red-50 p-4 rounded-xl"><div><b class="text-red-700">Reset suara</b><p class="text-sm text-red-600">Nol-kan semua suara &amp; status pemilih.</p></div><button onclick="resetSuara()" class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm">Reset</button></div>
@@ -220,11 +260,29 @@ body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background
 <script>
 const K='evoting_kandidat',P='evoting_pemilih',C='evoting_cfg';
 const $=i=>document.getElementById(i);
-const get=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
-const put=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+/* ---------- FIREBASE (isi dari Project settings → Web app) ---------- */
+const FIREBASE_CONFIG={apiKey:"AIzaSyCVZU1nhYim9TrPsAlWd4VWXGzwUtmI6nE",authDomain:"e-voting-pilketos-darhik.firebaseapp.com",databaseURL:"https://e-voting-pilketos-darhik-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"e-voting-pilketos-darhik",storageBucket:"e-voting-pilketos-darhik.firebasestorage.app",messagingSenderId:"780292627803",appId:"1:780292627803:web:346d4aae6634f9e2be4e7e"};
+const FB_OK=!FIREBASE_CONFIG.apiKey.startsWith('ISI');
+let db=null,online=false,adminSync=false,_r;const READY=new Promise(r=>_r=r);
+const cache={[K]:[],[P]:[],[C]:{},S:{}},PATH={[K]:'kandidat',[P]:'pemilih',[C]:'config'};
+const nk=s=>String(s).trim().replace(/[.#$\[\]\/]/g,'_');
+const get=(k,d)=>{const v=cache[k];return v==null?d:JSON.parse(JSON.stringify(v))};
+const put=(k,v)=>{const old=cache[k];cache[k]=v;if(!db)return;
+ if(!Array.isArray(v))return db.ref(PATH[k]).set(v);
+ const o=Object.fromEntries((old||[]).map(x=>[x.id,JSON.stringify(x)])),u={};
+ v.forEach(x=>{if(o[x.id]!==JSON.stringify(x))u[x.id]=x;delete o[x.id]});Object.keys(o).forEach(i=>u[i]=null);
+ return Object.keys(u).length?db.ref(PATH[k]).update(u):0};
+function conn(){const e=$('conn');if(!e)return;e.className='hidden md:inline text-xs font-semibold px-3 py-1.5 rounded-full '+(online?'bg-green-100 text-green-700':'bg-red-100 text-red-700');e.textContent=online?'● Realtime aktif':'● Offline'}
+function startSync(){const live=()=>sessionStorage.getItem('admin')&&refresh();
+ db.ref('.info/connected').on('value',s=>{online=!!s.val();conn()});
+ db.ref('config').on('value',s=>{cache[C]=s.val()||{};applyTheme(cfg().theme);_r();live()},e=>{_r();Swal.fire('Firebase menolak akses','Periksa Rules database.','error')});
+ db.ref('kandidat').on('value',s=>{cache[K]=Object.values(s.val()||{});live()})}
+function startAdminSync(){if(adminSync||!db)return;adminSync=true;
+ db.ref('suara').on('value',s=>{cache.S=s.val()||{};refresh()});
+ db.ref('pemilih').on('value',s=>{cache[P]=Object.values(s.val()||{});refresh()})}
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const cfg=()=>({open:true,pin:null,...get(C,{})});
-const cands=()=>get(K,[]).sort((a,b)=>a.noUrut-b.noUrut);
+const cands=()=>get(K,[]).map(c=>({...c,suara:cache.S[c.id]||0})).sort((a,b)=>a.noUrut-b.noUrut);
 const sha=async s=>{if(!(window.crypto&&crypto.subtle)){let h=5381;for(const c of s)h=(h*33^c.charCodeAt(0))>>>0;return'x'+h}
  return[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(b=>b.toString(16).padStart(2,'0')).join('')};
 const icons=()=>lucide.createIcons();
@@ -238,6 +296,7 @@ function genToken(used){const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let t;
  do{t=[...crypto.getRandomValues(new Uint8Array(6))].map(b=>a[b%a.length]).join('')}while(used&&used.has(t));return t}
 
 document.addEventListener('DOMContentLoaded',()=>{
+ if(!FB_OK)$('setup').classList.remove('hidden');else{firebase.initializeApp(FIREBASE_CONFIG);db=firebase.database();startSync()}
  applyTheme(cfg().theme);
  $('themeBtns').innerHTML=Object.entries(THEMES).map(([k,t])=>`<button onclick="applyTheme('${k}',1)" class="px-3 py-2 rounded-lg text-white text-sm font-bold" style="background:${t[1]}">${t[3]}</button>`).join('');
  $('nav').innerHTML=TABS.map(([id,ic,l])=>`<button id="bt-${id}" onclick="tab('${id}')" class="w-full flex items-center justify-center md:justify-start gap-3 px-3 py-3 rounded-lg text-sm font-medium"><i data-lucide="${ic}" class="w-5 h-5"></i><span class="hidden md:inline">${l}</span></button>`).join('');
@@ -247,8 +306,6 @@ document.addEventListener('DOMContentLoaded',()=>{
  if(sessionStorage.getItem('admin')==='1')showAdmin();
  else if(sessionStorage.getItem('voter'))showVoter();
  icons();
- window.addEventListener('storage',()=>{if(sessionStorage.getItem('admin'))refresh()});
- setInterval(()=>{if(sessionStorage.getItem('admin')&&curTab==='quickCount')refresh()},3000);
  ['click','keydown','touchstart'].forEach(e=>document.addEventListener(e,resetIdle));
 });
 
@@ -258,13 +315,13 @@ function resetIdle(){clearTimeout(idle);if(sessionStorage.getItem('voter'))idle=
 function logout(){Swal.fire({title:'Yakin ingin keluar?',icon:'warning',showCancelButton:true,confirmButtonColor:'#0f172a',confirmButtonText:'Ya, Keluar',cancelButtonText:'Batal'})
  .then(r=>{if(r.isConfirmed){sessionStorage.clear();location.reload()}})}
 
-async function loginAdmin(e){e.preventDefault();const pin=$('adminPin').value,c=cfg(),h=await sha(pin);
+async function loginAdmin(e){e.preventDefault();await READY;const pin=$('adminPin').value,c=cfg(),h=await sha(pin);
  const ok=c.pin?h===c.pin:pin==='123456';
  if(!ok)return Swal.fire({icon:'error',title:'Akses Ditolak',text:'PIN Panitia salah!'});
  sessionStorage.setItem('admin','1');showAdmin();
  if(!c.pin){await Swal.fire({icon:'warning',title:'Ganti PIN default',text:'Anda masih memakai PIN bawaan. Segera ganti demi keamanan.'});gantiPin()}}
 
-function showAdmin(){$('loginScreen').classList.add('hidden');$('adminDashboard').classList.remove('hidden');tab('quickCount')}
+function showAdmin(){startAdminSync();$('loginScreen').classList.add('hidden');$('adminDashboard').classList.remove('hidden');tab('quickCount')}
 
 function tab(id){curTab=id;document.querySelectorAll('.tab').forEach(e=>e.classList.add('hidden'));$('tab-'+id).classList.remove('hidden');
  TABS.forEach(([t])=>{$('bt-'+t).className='w-full flex items-center justify-center md:justify-start gap-3 px-3 py-3 rounded-lg text-sm font-medium '+(t===id?'bg-white text-brand shadow':'text-white hover:bg-white/20')});
@@ -284,15 +341,15 @@ async function gantiPin(){const {value:v}=await Swal.fire({title:'Ganti PIN Admi
  if(v){const c=cfg();c.pin=await sha(v);put(C,c);toast('PIN diperbarui')}}
 
 /* ---------- PEMILIH ---------- */
-async function loginPemilih(e){e.preventDefault();
+async function loginPemilih(e){e.preventDefault();await READY;
  if(!cfg().open)return Swal.fire({icon:'info',title:'Pemilihan Ditutup',text:'Pemungutan suara belum dibuka atau sudah selesai.'});
  const nis=$('voterNis').value.trim(),tk=$('voterToken').value.trim().toUpperCase();
- const v=get(P,[]).find(p=>p.nis===nis&&p.token===tk);
+ const v0=(await db.ref('pemilih/'+nk(nis)).get()).val(),v=v0&&v0.token===tk&&v0.nis===nis?v0:null;
  if(!v)return Swal.fire({icon:'error',title:'Data Tidak Ditemukan',text:'NIS/NIP atau Token salah.'});
  if(v.status==='sudah')return Swal.fire({icon:'warning',title:'Maaf',text:'Hak suara Anda sudah digunakan.'});
  sessionStorage.setItem('voter',v.id);showVoter();toast('Selamat Datang, '+v.nama)}
 
-function showVoter(){const v=get(P,[]).find(p=>p.id===sessionStorage.getItem('voter'));
+async function showVoter(){const v=(await db.ref('pemilih/'+sessionStorage.getItem('voter')).get()).val();
  if(!v||v.status==='sudah'){sessionStorage.clear();return location.reload()}
  $('loginScreen').classList.add('hidden');$('voterDashboard').classList.remove('hidden');
  $('vName').textContent=v.nama;$('vNis').textContent=v.nis+' • '+v.kelas;resetIdle();
@@ -317,12 +374,11 @@ function konfirmasi(id){const c=cands().find(x=>x.id===id);if(!c)return;
  Swal.fire({title:`Pilih Paslon Nomor ${c.noUrut}?`,html:`<b>${esc(c.ketua)}</b> &amp; <b>${esc(c.wakil)}</b><br><small>Pilihan yang sudah dikirim tidak dapat diubah.</small>`,icon:'question',showCancelButton:true,confirmButtonColor:'#0f172a',cancelButtonText:'Batal',confirmButtonText:'Ya, Coblos!'})
  .then(r=>{if(r.isConfirmed)kirim(id)})}
 
-function kirim(id){
+async function kirim(id){
  if(!cfg().open){sessionStorage.clear();return Swal.fire('Pemilihan ditutup','','info').then(()=>location.reload())}
- const ps=get(P,[]),vi=ps.findIndex(p=>p.id===sessionStorage.getItem('voter'));
- if(vi<0||ps[vi].status==='sudah'){sessionStorage.clear();return Swal.fire('Hak suara sudah digunakan','','warning').then(()=>location.reload())}
- const cs=get(K,[]),ci=cs.findIndex(c=>c.id===id);if(ci<0)return;
- cs[ci].suara=(cs[ci].suara||0)+1;ps[vi].status='sudah';put(K,cs);put(P,ps);
+ const r=await db.ref('pemilih/'+sessionStorage.getItem('voter')).transaction(p=>p===null?p:(p.status==='belum'?{...p,status:'sudah'}:undefined));
+ if(!r.committed||!r.snapshot.val()){sessionStorage.clear();return Swal.fire('Hak suara sudah digunakan','','warning').then(()=>location.reload())}
+ await db.ref('suara/'+id).transaction(n=>(n||0)+1);
  sessionStorage.clear();
  Swal.fire({icon:'success',title:'Terima Kasih!',text:'Suara Anda berhasil direkam.',showConfirmButton:false,timer:2000}).then(()=>location.reload())}
 
@@ -336,13 +392,13 @@ window.modalKandidat=modalKandidat;
 function simpanK(){const id=$('kId').value,cs=get(K,[]),no=parseInt($('kNo').value),ketua=$('kKetua').value.trim(),wakil=$('kWakil').value.trim();
  if(!no||!ketua||!wakil)return Swal.fire('Error','Nomor urut, nama Ketua & Wakil wajib diisi!','error');
  if(cs.some(c=>c.noUrut===no&&c.id!==id))return Swal.fire('Error','Nomor urut sudah dipakai paslon lain.','error');
- const old=cs.find(c=>c.id===id),n={id:id||Date.now().toString(),noUrut:no,foto:$('kFoto').value,ketua,wakil,visi:$('kVisi').value,misi:$('kMisi').value,suara:old?.suara||0};
+ const old=cs.find(c=>c.id===id),n={id:id||Date.now().toString(),noUrut:no,foto:$('kFoto').value,ketua,wakil,visi:$('kVisi').value,misi:$('kMisi').value};
  old?cs[cs.indexOf(old)]=n:cs.push(n);
  try{put(K,cs)}catch{return Swal.fire('Penyimpanan penuh','Gunakan foto berukuran lebih kecil.','error')}
  $('modalK').classList.add('hidden');renderK();toast('Tersimpan')}
 
 function hapusK(id){Swal.fire({title:'Hapus Paslon?',text:'Data dan suaranya akan hilang.',icon:'warning',showCancelButton:true,confirmButtonText:'Ya, Hapus',cancelButtonText:'Batal'})
- .then(r=>{if(r.isConfirmed){put(K,get(K,[]).filter(c=>c.id!==id));renderK()}})}
+ .then(r=>{if(r.isConfirmed){put(K,get(K,[]).filter(c=>c.id!==id));db.ref('suara/'+id).remove();renderK()}})}
 
 function renderK(){$('kandidatGrid').innerHTML=cands().map(c=>`
  <div class="border rounded-xl overflow-hidden shadow-sm bg-white flex flex-col">
@@ -364,7 +420,7 @@ function importExcel(ev){const f=ev.target.files[0];if(!f)return;const r=new Fil
   rows.forEach(row=>{const k=Object.keys(row),f=s=>k.find(x=>x.toLowerCase().includes(s));
    const nk=f('nis')||f('nip'),nm=f('nama'),kl=f('kelas');if(!nk||!nm||row[nk]==='')return;
    const nis=String(row[nk]).trim();if(nisSet.has(nis)){skip++;return}nisSet.add(nis);
-   const t=genToken(tk);tk.add(t);baru.push({id:Date.now()+'-'+Math.random().toString(16).slice(2),nis,nama:String(row[nm]).trim(),kelas:kl?String(row[kl]).trim():'-',token:t,status:'belum'})});
+   const t=genToken(tk);tk.add(t);baru.push({id:nk(nis),nis,nama:String(row[nm]).trim(),kelas:kl?String(row[kl]).trim():'-',token:t,status:'belum'})});
   if(!baru.length)return Swal.fire('Gagal','Tidak ada data baru yang valid. Periksa judul kolom (NIS/NIP, Nama Lengkap, Kelas).','error');
   put(P,[...ex,...baru]);renderPemilih();Swal.fire('Berhasil',`${baru.length} pemilih diimpor${skip?`, ${skip} NIS ganda dilewati`:''}.`,'success')
  }catch{Swal.fire('Gagal','File Excel tidak dapat dibaca.','error')}};
@@ -376,7 +432,7 @@ async function tambahPemilih(){const {value:v}=await Swal.fire({title:'Tambah Pe
  preConfirm:()=>{const o={nis:$('a1').value.trim(),nama:$('a2').value.trim(),kelas:$('a3').value.trim()||'-'};
   if(!o.nis||!o.nama){Swal.showValidationMessage('NIS dan nama wajib diisi');return false}
   if(get(P,[]).some(p=>p.nis===o.nis)){Swal.showValidationMessage('NIS sudah terdaftar');return false}return o}});
- if(v){const ps=get(P,[]);ps.push({id:Date.now()+'-'+Math.random().toString(16).slice(2),...v,token:genToken(new Set(ps.map(p=>p.token))),status:'belum'});put(P,ps);renderPemilih()}}
+ if(v){const ps=get(P,[]);ps.push({id:nk(v.nis),...v,token:genToken(new Set(ps.map(p=>p.token))),status:'belum'});put(P,ps);renderPemilih()}}
 
 function hapusSemuaPemilih(){Swal.fire({title:'Hapus SEMUA pemilih?',text:'Tidak bisa dibatalkan!',icon:'error',showCancelButton:true,confirmButtonColor:'#d33',confirmButtonText:'Ya, Kosongkan',cancelButtonText:'Batal'})
  .then(r=>{if(r.isConfirmed){put(P,[]);renderPemilih()}})}
@@ -387,7 +443,7 @@ function editP(id){const ps=get(P,[]),p=ps.find(x=>x.id===id);if(!p)return;
  Swal.fire({title:'Edit Pemilih',html:`<input id="e1" class="swal2-input" value="${esc(p.nis)}"><input id="e2" class="swal2-input" value="${esc(p.nama)}"><input id="e3" class="swal2-input" value="${esc(p.kelas)}">`,showCancelButton:true,confirmButtonText:'Simpan',cancelButtonText:'Batal',
   preConfirm:()=>{const nis=$('e1').value.trim();if(!nis||!$('e2').value.trim()){Swal.showValidationMessage('NIS dan nama wajib diisi');return false}
    if(ps.some(x=>x.nis===nis&&x.id!==id)){Swal.showValidationMessage('NIS sudah dipakai');return false}return{nis,nama:$('e2').value.trim(),kelas:$('e3').value.trim()}}})
- .then(r=>{if(r.isConfirmed){Object.assign(p,r.value);put(P,ps);renderPemilih()}})}
+ .then(r=>{if(r.isConfirmed){Object.assign(p,r.value);p.id=nk(p.nis);put(P,ps);renderPemilih()}})}
 
 function renderPemilih(){const q=($('cariPemilih').value||'').toLowerCase(),all=get(P,[]);
  const ps=all.filter(p=>(p.nis+p.nama+p.kelas).toLowerCase().includes(q));
@@ -458,16 +514,16 @@ function eksporHasil(){const wb=XLSX.utils.book_new(),ps=get(P,[]);
  XLSX.writeFile(wb,'hasil_pilketos.xlsx')}
 
 /* ---------- CADANGAN ---------- */
-function backup(){const d={v:1,at:new Date().toISOString(),kandidat:get(K,[]),pemilih:get(P,[])},a=document.createElement('a');
+function backup(){const d={v:1,at:new Date().toISOString(),kandidat:cands(),pemilih:get(P,[])},a=document.createElement('a');
  a.href=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:'application/json'}));a.download='cadangan_pilketos_'+Date.now()+'.json';a.click()}
 function restore(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();
  r.onload=e=>{try{const d=JSON.parse(e.target.result);if(!Array.isArray(d.kandidat)||!Array.isArray(d.pemilih))throw 0;
   Swal.fire({title:'Pulihkan data?',text:'Data saat ini akan ditimpa.',icon:'warning',showCancelButton:true,confirmButtonText:'Ya, Pulihkan',cancelButtonText:'Batal'})
-  .then(x=>{if(x.isConfirmed){put(K,d.kandidat);put(P,d.pemilih);toast('Data dipulihkan')}})}catch{Swal.fire('Gagal','File cadangan tidak valid.','error')}};
+  .then(x=>{if(x.isConfirmed){put(K,d.kandidat.map(({suara,...c})=>c));put(P,d.pemilih.map(p=>({...p,id:nk(p.nis)})));db.ref('suara').set(Object.fromEntries(d.kandidat.map(c=>[c.id,c.suara||0])));toast('Data dipulihkan')}})}catch{Swal.fire('Gagal','File cadangan tidak valid.','error')}};
  r.readAsText(f);ev.target.value=''}
 function resetSuara(){Swal.fire({title:'Reset semua suara?',text:'Ketik RESET untuk melanjutkan.',input:'text',icon:'warning',showCancelButton:true,confirmButtonColor:'#d33',confirmButtonText:'Reset',cancelButtonText:'Batal',
  preConfirm:v=>v==='RESET'||Swal.showValidationMessage('Ketik RESET dengan huruf besar')})
- .then(r=>{if(r.isConfirmed){put(K,get(K,[]).map(c=>({...c,suara:0})));put(P,get(P,[]).map(p=>({...p,status:'belum'})));toast('Suara direset')}})}
+ .then(r=>{if(r.isConfirmed){const u={};get(K,[]).forEach(c=>u['suara/'+c.id]=0);get(P,[]).forEach(p=>u['pemilih/'+p.id+'/status']='belum');db.ref().update(u);toast('Suara direset')}})}
 </script>
 </body>
 </html>
