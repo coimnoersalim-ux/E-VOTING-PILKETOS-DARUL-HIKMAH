@@ -96,7 +96,7 @@ body[data-jj=mts] #bilik>div{border-radius:36px!important}
 /* ===== LOGIN HIDUP ===== */
 @keyframes lbg{50%{background-position:100% 50%}}@keyframes lbob{50%{transform:translateY(-7px)}}@keyframes lpu{0%{box-shadow:0 0 0 0 rgba(245,158,11,.6)}100%{box-shadow:0 0 0 14px rgba(245,158,11,0)}}
 @keyframes lsh{to{background-position:200% center}}@keyframes lmq{to{transform:translateX(-50%)}}@keyframes lmr{from{transform:translateX(-50%)}to{transform:none}}
-#loginScreen{background:linear-gradient(120deg,var(--bd),var(--b1),var(--b2),var(--bd))!important;background-size:300% 300%!important;animation:lbg 18s ease infinite;padding:46px 0}
+#loginScreen{background:linear-gradient(120deg,var(--bd),var(--b1),var(--b2),var(--bd))!important;background-size:300% 300%!important;animation:lbg 18s ease infinite}
 #lcv{position:fixed;inset:0;pointer-events:none}
 #loginScreen img{animation:lbob 4s ease-in-out infinite}#loginScreen img+img{animation-delay:-2s}
 #loginScreen h1{background:linear-gradient(90deg,#fff,#fbbf24,#fff,#67e8f9,#fff);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:lsh 6s linear infinite}
@@ -113,8 +113,7 @@ body[data-jj=mts] #bilik>div{border-radius:36px!important}
 <ol class="list-decimal pl-5 space-y-2 text-sm text-slate-600"><li>Buka <b>console.firebase.google.com</b> → buat project.</li><li><b>Build → Realtime Database → Create Database</b> (lokasi Singapore, mode test).</li><li>Tab <b>Rules</b> → isi <code class="bg-slate-100 px-1 rounded">{"rules":{".read":true,".write":true}}</code> → Publish.</li><li><b>Project settings → Your apps → Web (&lt;/&gt;)</b> → salin <code>firebaseConfig</code> (termasuk databaseURL) ke file ini.</li></ol></div></div>
 <!-- LOGIN -->
 <div id="loginScreen" class="min-h-screen w-full flex items-center justify-center bg-resmi fixed inset-0 z-50 overflow-y-auto">
- <canvas id="lcv"></canvas><div class="lmq t"><div id="lt1"></div></div><div class="lmq b"><div id="lt2"></div></div>
-  <div class="w-full max-w-md p-8 m-4 bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20">
+ <canvas id="lcv"></canvas> <div class="w-full max-w-md p-8 m-4 bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20">
   <div class="flex justify-center items-center gap-4 mb-6">
    <img src="logo_sekolah.png" alt="Logo MTs" class="h-24 w-24 object-contain" onerror="this.style.display='none'">
    <img src="image.png" alt="Logo KPO" class="h-24 w-24 object-contain" onerror="this.style.display='none'">
@@ -122,7 +121,6 @@ body[data-jj=mts] #bilik>div{border-radius:36px!important}
   <div class="text-center mb-8">
    <h1 class="text-2xl font-bold text-white mb-2">E-Voting Pilketos Darhik</h1>
    <p class="text-white/90 text-sm">MTs Darul Hikmah Periode 2026/2027</p>
-   <div id="lcd" class="mt-3 text-xs font-bold text-amber-300"></div>
   </div>
   <div id="formPemilih">
    <h2 class="text-lg font-semibold text-amber-400 mb-4 text-center">Login Pemilih (Siswa/Guru)</h2>
@@ -554,15 +552,7 @@ function resetSuara(){Swal.fire({title:'Reset semua suara?',text:'Ketik RESET un
  .then(r=>{if(r.isConfirmed){const u={};get(K,[]).forEach(c=>u[BASE+'suara/'+c.id]=0);get(P,[]).forEach(p=>u[BASE+'pemilih/'+p.id+'/status']='belum');db.ref().update(u);toast('Suara direset')}})}
 </script>
 <script>
-(function(){const g=i=>document.getElementById(i),J=JJ==='ma'?'MA':'MTs';
-const MULAI=new Date('2026-11-19T07:00:00+07:00'),SELESAI=new Date('2026-11-19T15:00:00+07:00');
-const A=['📢 <b>PILKETOS DARHIK 2026/2027</b> '+J+' Darul Hikmah','🗓️ Hari pemilihan: <b>Kamis, 19 November 2026</b>','🔐 Masuk dengan <b>NIS</b> dan <b>token</b> pribadimu, jangan dibagikan ke siapa pun','🗳️ Satu suara darimu <b>menentukan arah OSIS</b> setahun ke depan','📍 <b>LUBER JURDIL</b>: Langsung, Umum, Bebas, Rahasia, Jujur, Adil'];
-const B=['🌟 Pilih pemimpin yang <b>jujur, amanah, dan berprestasi</b>','🚫 Dilarang mewakilkan atau memilih lebih dari satu kali','🕋 Pilih dengan hati nurani, <b>bukan karena paksaan atau ajakan</b>','😊 Bingung? Tanyakan ke <b>panitia KPO</b>','🎉 Terima kasih sudah ikut menyukseskan pesta demokrasi madrasah'];
-const fill=(id,a)=>{const h=a.map(x=>'<span>'+x+'</span><span>✦</span>').join('');g(id).innerHTML=h+h};fill('lt1',A);fill('lt2',B);
-const cd=g('lcd'),p2=n=>String(n).padStart(2,'0');
-function tk(){const n=new Date(),d=MULAI-n;if(!cd)return;if(d>0){const x=Math.floor(d/1000);cd.textContent='⏳ Pemilihan dimulai dalam '+Math.floor(x/86400)+' hari '+p2(Math.floor(x%86400/3600))+':'+p2(Math.floor(x%3600/60))+':'+p2(x%60)}else cd.textContent=n<SELESAI?'🔴 Pemilihan berlangsung hari ini':'✅ Pemilihan telah selesai'}
-tk();setInterval(tk,1000);
-const cv=g('lcv'),cx=cv.getContext('2d');let W,H,P=[];const rs=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};rs();addEventListener('resize',rs);
+(function(){const g=i=>document.getElementById(i),cv=g('lcv'),cx=cv.getContext('2d');let W,H,P=[];const rs=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};rs();addEventListener('resize',rs);
 for(let i=0;i<40;i++)P.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2.2+.6,v:Math.random()*.5+.15,a:Math.random()*6});
 (function f(){cx.clearRect(0,0,W,H);if(!g('loginScreen').classList.contains('hidden'))P.forEach(p=>{p.y-=p.v;p.a+=.02;p.x+=Math.sin(p.a)*.4;if(p.y<-5){p.y=H+5;p.x=Math.random()*W}cx.beginPath();cx.arc(p.x,p.y,p.r,0,7);cx.fillStyle='rgba(255,255,255,'+(.25+Math.sin(p.a)*.2)+')';cx.fill()});requestAnimationFrame(f)})();
 })();
