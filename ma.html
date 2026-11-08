@@ -517,10 +517,11 @@ function cetakBA(){const {cs,top}=hasil(),ps=get(P,[]),tot=ps.length,sdh=ps.filt
 function cetakHadir(){const ps=get(P,[]).sort((a,b)=>a.kelas.localeCompare(b.kelas,'id')||a.nama.localeCompare(b.nama,'id')),n=28,pages=[];
  for(let i=0;i<ps.length;){const r=ps.length-i,z=r<=18?r:r<=n?r-4:n;pages.push(ps.slice(i,i+z));i+=z}if(!pages.length)pages.push([]);
  const tot=pages.length;
+ const st=[];let cs=0;pages.forEach(x=>{st.push(cs);cs+=x.length});
  const foot=(i)=>`<div class="pgno">Halaman ${i} dari ${tot}</div>`;
  let h=pages.map((pg,pi)=>`<div class="doc pg">${kop()}<h3>DAFTAR HADIR PEMILIH</h3>
  <table class="tb hadir"><thead><tr><th style="width:12mm">No</th><th style="width:34mm">NIS / NIP</th><th>Nama Lengkap</th><th style="width:24mm">Kelas</th><th style="width:48mm">Tanda Tangan</th></tr></thead><tbody>
- ${pg.map((p,i)=>{const g=pi*n+i+1;return`<tr><td class="c">${g}</td><td class="c">${esc(p.nis)}</td><td>${esc(p.nama)}</td><td class="c">${esc(p.kelas)}</td><td style="text-align:${g%2?'left':'right'};color:#666">${g}. ..........</td></tr>`}).join('')}</tbody></table>
+ ${pg.map((p,i)=>{const g=st[pi]+i+1;return`<tr><td class="c">${g}</td><td class="c">${esc(p.nis)}</td><td>${esc(p.nama)}</td><td class="c">${esc(p.kelas)}</td><td style="text-align:${g%2?'left':'right'};color:#666">${g}. ..........</td></tr>`}).join('')}</tbody></table>
  ${pi===pages.length-1?`<p style="margin-top:8px;font-size:10pt">Jumlah pemilih terdaftar: <b>${ps.length}</b> orang</p>${ttd()}`:''}${foot(pi+1)}</div>`).join('');
  cetak(h)}
 
