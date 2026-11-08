@@ -80,6 +80,18 @@ main .rounded-xl{border-radius:18px!important}
 #tbPemilih tr:hover{background:#f8fafc}
 .swal2-popup{border-radius:26px!important;font-family:inherit!important}
 .swal2-styled.swal2-confirm{border-radius:14px!important}
+
+/* ===== CIRI KHAS PER JENJANG ===== */
+body[data-jj=ma]{font-family:'Sora',system-ui,sans-serif!important}
+body[data-jj=ma] aside{border-radius:0!important}
+body[data-jj=ma] main .rounded-2xl{border-radius:12px!important;border-left:6px solid var(--b2)!important}
+body[data-jj=ma] #stats>div{border-radius:12px!important}
+body[data-jj=ma] #loginScreen>div{border-radius:16px;border-top:4px solid #fbbf24}
+body[data-jj=ma] #bilik>div{border-radius:16px!important;border-bottom:6px solid var(--b2)!important}
+body[data-jj=ma] #kandidatGrid>div{border-radius:14px!important}
+body[data-jj=ma] #voterDashboard header{background:linear-gradient(100deg,var(--bd),var(--b1))!important;border-bottom:4px solid #fbbf24}
+body[data-jj=mts] #loginScreen>div{border-radius:36px}
+body[data-jj=mts] #bilik>div{border-radius:36px!important}
 </style>
 </head>
 <body class="text-slate-800">
@@ -297,6 +309,7 @@ function genToken(used){const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let t;
  do{t=[...crypto.getRandomValues(new Uint8Array(6))].map(b=>a[b%a.length]).join('')}while(used&&used.has(t));return t}
 
 document.addEventListener('DOMContentLoaded',()=>{
+ document.body.dataset.jj=JJ;
  if(sessionStorage.getItem('jj')!==JJ){sessionStorage.clear();sessionStorage.setItem('jj',JJ)}
  if(!FB_OK)$('setup').classList.remove('hidden');else{firebase.initializeApp(FIREBASE_CONFIG);db=firebase.database();startSync()}
  applyTheme(cfg().theme);
