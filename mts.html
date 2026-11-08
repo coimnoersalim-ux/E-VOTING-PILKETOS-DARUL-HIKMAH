@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Voting Pilketos MTs Darul Hikmah</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.383.0/dist/umd/lucide.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:#f8fafc}
+:root{--bd:#0a1a3f;--b1:#12306b;--b2:#2a4a9a}
+.bg-resmi{background:radial-gradient(circle at 15% 20%,rgba(255,255,255,.18),transparent 40%),linear-gradient(135deg,var(--bd) 0%,var(--b1) 55%,var(--b2) 100%)}
+.bg-brand{background:var(--b1)}.bg-brand-d{background:var(--bd)}.hover\:bg-brand-d:hover{background:var(--bd)}.text-brand{color:var(--b1)}.bd-brand{border-color:var(--bd)}.bl-brand{border-color:rgba(255,255,255,.3)}
+.gold-border{padding:4px;background:linear-gradient(135deg,#fbbf24,#d97706 50%,#fef3c7);border-radius:1rem}
+.sb::-webkit-scrollbar{width:6px}.sb::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+#printContainer{display:none}
+@page{size:A4;margin:12mm}
+.doc{font-family:'Times New Roman',Times,serif;color:#000;font-size:12pt;line-height:1.45}
+.kop{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:4px double #000;padding-bottom:8px;margin-bottom:14px}
+.kop img{width:80px;height:80px;object-fit:contain}
+.kop .t{flex:1;text-align:center;line-height:1.25}
+.doc h3{text-align:center;font-weight:bold;font-size:13pt;margin:0 0 10px;text-decoration:underline}
+.tb{width:100%;border-collapse:collapse;table-layout:fixed}
+.tb th,.tb td{border:1px solid #000;padding:3px 6px;font-size:10.5pt;vertical-align:middle;overflow-wrap:anywhere}
+.tb th{background:#e5e7eb;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.tb thead{display:table-header-group}.tb tr{page-break-inside:avoid}
+.hadir td{height:7mm}
+.c{text-align:center}
+.pg{page-break-after:always}.pg:last-child{page-break-after:auto}
+.pgno{text-align:right;font-size:9pt;margin-top:4px}
+.kgrid{display:grid;grid-template-columns:1fr 1fr;gap:4mm}
+.kartu{border:1.5px dashed #333;border-radius:8px;height:50mm;box-sizing:border-box;padding:3mm 4mm;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;font-family:Arial,sans-serif;color:#000;page-break-inside:avoid}
+.kh{display:flex;align-items:center;gap:6px;border-bottom:2px solid var(--b1);padding-bottom:2mm}
+.kh img{width:11mm;height:11mm;object-fit:contain}
+.kh div{flex:1;text-align:center;font-size:8pt;line-height:1.2}
+.kh b{font-size:10pt}
+.kb{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:9pt;line-height:1.35}
+.kb .nm{flex:1;min-width:0;overflow-wrap:anywhere}
+.kb .tk{border:1.5px solid #000;border-radius:6px;padding:3px 8px;text-align:center;font-size:7pt}
+.kb .tk b{display:block;font-size:15pt;letter-spacing:2px;font-family:'Courier New',monospace}
+.kf{font-size:6.5pt;text-align:center;color:#444}
+@media print{body{background:#fff!important}body>*:not(#printContainer){display:none!important}#printContainer{display:block!important;padding:0!important;min-height:0!important}}
+
+/* ===== TAMPILAN BARU ===== */
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif!important;background:linear-gradient(160deg,#f1f5ff,#f8fafc 40%,#fff7ed)!important;background-attachment:fixed}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes fl{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-30px)}}
+.tab:not(.hidden){animation:up .35s ease}
+button{transition:all .2s}button:active{transform:scale(.97)}
+input,textarea,select{border-radius:14px!important}
+#loginScreen::before,#loginScreen::after{content:'';position:fixed;width:340px;height:340px;border-radius:50%;filter:blur(70px);opacity:.45;pointer-events:none;animation:fl 12s ease-in-out infinite}
+#loginScreen::before{background:#fbbf24;top:-80px;left:-60px}#loginScreen::after{background:var(--b2);bottom:-100px;right:-60px;animation-delay:-6s}
+#loginScreen>div{position:relative;z-index:1;border-radius:30px;background:rgba(255,255,255,.13);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.3);box-shadow:0 30px 80px -20px rgba(0,0,0,.5);animation:up .6s ease}
+#loginScreen input{border:0}
+aside{background:linear-gradient(180deg,var(--b1),var(--bd))!important;border-radius:0 28px 28px 0}
+#nav button{border-radius:16px!important}
+#adminDashboard header{background:rgba(255,255,255,.8);backdrop-filter:blur(12px);border:0;box-shadow:0 4px 24px -12px rgba(15,23,42,.2)}
+main .rounded-2xl{border:0!important;border-radius:24px!important;box-shadow:0 12px 36px -16px rgba(15,23,42,.18)!important}
+main .rounded-xl{border-radius:18px!important}
+#stats>div{position:relative;overflow:hidden;background:#fff;transition:transform .25s}
+#stats>div:hover{transform:translateY(-4px)}
+#stats>div::after{content:'';position:absolute;right:-24px;top:-24px;width:100px;height:100px;border-radius:50%;background:var(--b2);opacity:.12}
+.bg-slate-900{background:linear-gradient(135deg,var(--b1),var(--b2))!important;box-shadow:0 8px 20px -8px var(--b1)}
+.bg-amber-500{box-shadow:0 8px 20px -8px #f59e0b}
+#tab-cetak .border{border:0;background:linear-gradient(180deg,#fff,#f8fafc);box-shadow:0 8px 24px -14px rgba(15,23,42,.3);transition:transform .25s}
+#tab-cetak .border:hover{transform:translateY(-4px)}
+#kandidatGrid>div{border:0!important;border-radius:24px!important;box-shadow:0 12px 30px -14px rgba(15,23,42,.3);transition:transform .25s}
+#kandidatGrid>div:hover{transform:translateY(-4px)}
+#voterDashboard header{background:linear-gradient(120deg,var(--bd),var(--b1) 60%,var(--b2))!important}
+#bilik>div{border:0!important;border-radius:32px!important;box-shadow:0 24px 50px -22px rgba(15,23,42,.45)!important;animation:up .5s ease backwards}
+#bilik>div:hover{transform:translateY(-8px)!important}
+#bilik .bg-brand{background:linear-gradient(160deg,var(--b2),var(--bd))!important}
+#bilik button{border-radius:18px!important;background:linear-gradient(135deg,var(--b1),var(--b2))!important}
+#tbPemilih tr:hover{background:#f8fafc}
+.swal2-popup{border-radius:26px!important;font-family:inherit!important}
+.swal2-styled.swal2-confirm{border-radius:14px!important}
+</style>
+</head>
+<body class="text-slate-800">
+
+<div id="setup" class="hidden fixed inset-0 z-[60] bg-resmi flex items-center justify-center p-4 overflow-y-auto"><div class="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl">
+<h2 class="text-xl font-extrabold mb-1">Hubungkan Firebase dulu</h2><p class="text-sm text-slate-500 mb-4">Isi <b>FIREBASE_CONFIG</b> di bagian script file ini.</p>
+<ol class="list-decimal pl-5 space-y-2 text-sm text-slate-600"><li>Buka <b>console.firebase.google.com</b> → buat project.</li><li><b>Build → Realtime Database → Create Database</b> (lokasi Singapore, mode test).</li><li>Tab <b>Rules</b> → isi <code class="bg-slate-100 px-1 rounded">{"rules":{".read":true,".write":true}}</code> → Publish.</li><li><b>Project settings → Your apps → Web (&lt;/&gt;)</b> → salin <code>firebaseConfig</code> (termasuk databaseURL) ke file ini.</li></ol></div></div>
+<!-- LOGIN -->
+<div id="loginScreen" class="min-h-screen w-full flex items-center justify-center bg-resmi fixed inset-0 z-50 overflow-y-auto">
+ <div class="w-full max-w-md p-8 m-4 bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20">
+  <div class="flex justify-center items-center gap-4 mb-6">
+   <img src="logo_sekolah.png" alt="Logo MTs" class="h-24 w-24 object-contain" onerror="this.style.display='none'">
+   <img src="image.png" alt="Logo KPO" class="h-24 w-24 object-contain" onerror="this.style.display='none'">
+  </div>
+  <div class="text-center mb-8">
+   <h1 class="text-2xl font-bold text-white mb-2">E-Voting Pilketos Darhik</h1>
+   <p class="text-white/90 text-sm">MTs Darul Hikmah Periode 2026/2027</p>
+  </div>
+  <div id="formPemilih">
+   <h2 class="text-lg font-semibold text-amber-400 mb-4 text-center">Login Pemilih (Siswa/Guru)</h2>
+   <form onsubmit="loginPemilih(event)" class="space-y-4">
+    <div><label class="block text-sm text-white font-medium mb-1">NISN / NIP</label>
+     <input id="voterNis" required autocomplete="off" class="w-full px-4 py-3 rounded-xl bg-white/90 outline-none focus:ring-2 focus:ring-amber-400 font-semibold" placeholder="Masukkan NIS/NIP Anda"></div>
+    <div><label class="block text-sm text-white font-medium mb-1">Token Akses</label>
+     <input id="voterToken" type="password" required autocomplete="off" class="w-full px-4 py-3 rounded-xl bg-white/90 outline-none focus:ring-2 focus:ring-amber-400 font-semibold tracking-widest uppercase" placeholder="••••••"></div>
+    <button class="w-full bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3 rounded-xl transition flex justify-center items-center gap-2"><i data-lucide="log-in" class="w-5 h-5"></i> MASUK BILIK SUARA</button>
+   </form>
+   <div class="mt-8 text-center"><button onclick="toggleLogin()" class="w-full py-2.5 rounded-xl bg-white text-brand font-bold shadow-lg hover:bg-white/90 flex items-center justify-center gap-2"><i data-lucide="shield-check" class="w-5 h-5"></i> Akses Admin (KPO)</button></div>
+  </div>
+  <div id="formAdmin" class="hidden">
+   <h2 class="text-lg font-semibold text-white mb-4 text-center">Login Admin (KPO)</h2>
+   <form onsubmit="loginAdmin(event)" class="space-y-4">
+    <input id="adminPin" type="password" required class="w-full px-4 py-3 rounded-xl bg-white/90 outline-none focus:ring-2 focus:ring-blue-400 font-semibold text-center tracking-widest" placeholder="Masukkan PIN Admin">
+    <button class="w-full bg-white/20 hover:bg-white/30 border border-white/40 text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2"><i data-lucide="shield-check" class="w-5 h-5 text-amber-400"></i> MASUK DASHBOARD</button>
+   </form>
+   <div class="mt-6 text-center"><button onclick="toggleLogin()" class="text-sm text-white font-semibold underline hover:text-amber-200 inline-flex items-center gap-1"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke Login Pemilih</button></div>
+  </div>
+ </div>
+</div>
+
+<!-- ADMIN -->
+<div id="adminDashboard" class="hidden h-screen w-full flex bg-slate-50 overflow-hidden">
+ <aside class="w-16 md:w-64 bg-brand text-white flex flex-col shadow-2xl z-10 shrink-0">
+  <div class="p-3 md:p-6 flex flex-col items-center border-b bl-brand">
+   <div class="flex items-center gap-2 mb-3">
+    <img src="logo_sekolah.png" class="h-10 w-10 md:h-14 md:w-14 object-contain" onerror="this.style.display='none'">
+    <img src="image.png" class="hidden md:block md:h-14 md:w-14 object-contain" onerror="this.style.display='none'">
+   </div>
+   <h2 class="hidden md:block text-lg font-bold text-white">PANITIA KPO</h2>
+   <p class="hidden md:block text-xs text-white/80 text-center mt-1">MTs Darul Hikmah Cikatomas</p>
+  </div>
+  <nav id="nav" class="flex-1 p-2 md:p-4 space-y-2 overflow-y-auto"></nav>
+  <div class="p-2 md:p-4 border-t bl-brand">
+   <button onclick="logout()" class="w-full flex items-center justify-center md:justify-start gap-3 px-3 py-3 rounded-lg text-sm font-medium text-white hover:bg-red-500"><i data-lucide="log-out" class="w-5 h-5"></i><span class="hidden md:inline">Keluar</span></button>
+  </div>
+ </aside>
+ <div class="flex-1 flex flex-col overflow-hidden">
+  <header class="bg-white shadow-sm border-b px-4 md:px-8 py-4 flex justify-between items-center gap-4">
+   <h2 class="text-base md:text-xl font-bold">Dashboard Pilketos MTs Darul Hikmah Cikatomas</h2>
+   <div class="flex items-center gap-2"><span id="conn" class="hidden md:inline text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-100 text-slate-500">● Menyambung…</span><div id="statusPemilu" class="px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap"></div></div>
+  </header>
+  <main class="flex-1 overflow-y-auto p-4 md:p-8">
+   <section id="tab-quickCount" class="tab hidden">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6" id="stats"></div>
+    <div class="bg-white p-6 rounded-2xl shadow-sm border mb-6">
+     <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><i data-lucide="bar-chart" class="w-5 h-5 text-amber-500"></i> Perolehan Suara Real-Time</h3>
+     <div class="h-80"><canvas id="voteChart"></canvas></div>
+    </div>
+    <div id="rank" class="bg-white p-6 rounded-2xl shadow-sm border"></div>
+   </section>
+
+   <section id="tab-kandidat" class="tab hidden">
+    <div class="bg-white p-6 rounded-2xl shadow-sm border">
+     <div class="flex justify-between items-center mb-6">
+      <h3 class="text-lg font-bold flex items-center gap-2"><i data-lucide="users" class="w-5 h-5 text-amber-500"></i> Manajemen Pasangan Calon</h3>
+      <button onclick="modalKandidat()" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> Tambah Paslon</button>
+     </div>
+     <div id="kandidatGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+   </section>
+
+   <section id="tab-pemilih" class="tab hidden">
+    <div class="bg-white p-6 rounded-2xl shadow-sm border">
+     <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
+      <h3 class="text-lg font-bold flex items-center gap-2"><i data-lucide="user-check" class="w-5 h-5 text-amber-500"></i> Daftar Pemilih Tetap (DPT)</h3>
+      <div class="flex flex-wrap gap-2">
+       <button onclick="templateExcel()" class="bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2"><i data-lucide="download" class="w-4 h-4"></i> Template</button>
+       <label class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm font-medium cursor-pointer flex items-center gap-2"><i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Import Excel
+        <input type="file" accept=".xlsx,.xls" class="hidden" onchange="importExcel(event)"></label>
+       <button onclick="tambahPemilih()" class="bg-slate-900 text-white px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2"><i data-lucide="user-plus" class="w-4 h-4"></i> Tambah</button>
+       <button onclick="hapusSemuaPemilih()" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2"><i data-lucide="trash-2" class="w-4 h-4"></i> Hapus Semua</button>
+      </div>
+     </div>
+     <div class="bg-blue-50 border-l-4 border-blue-500 p-3 mb-4 rounded-r-lg text-sm text-blue-800">Kolom Excel baris pertama: <b>NIS/NIP</b>, <b>Nama Lengkap</b>, <b>Kelas</b>. NIS ganda otomatis dilewati.</div>
+     <input id="cariPemilih" oninput="renderPemilih()" placeholder="Cari nama / NIS / kelas..." class="w-full md:w-80 mb-4 px-4 py-2 rounded-lg border outline-none focus:ring-2 focus:ring-amber-400">
+     <div class="overflow-auto border rounded-xl max-h-[60vh] sb">
+      <table class="w-full text-left min-w-max text-sm">
+       <thead class="bg-slate-50 sticky top-0"><tr>
+        <th class="py-3 px-4">No</th><th class="py-3 px-4">NIS / NIP</th><th class="py-3 px-4">Nama</th><th class="py-3 px-4">Kelas</th><th class="py-3 px-4 text-center">Token</th><th class="py-3 px-4 text-center">Status</th><th class="py-3 px-4 text-center">Aksi</th></tr></thead>
+       <tbody id="tbPemilih" class="divide-y"></tbody>
+      </table>
+     </div>
+    </div>
+   </section>
+
+   <section id="tab-cetak" class="tab hidden">
+    <div class="max-w-5xl mx-auto bg-white p-6 rounded-2xl shadow-sm border">
+     <h3 class="text-lg font-bold mb-6 flex items-center gap-2"><i data-lucide="printer" class="w-5 h-5 text-amber-500"></i> Cetak & Ekspor Laporan</h3>
+     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 text-center">
+      <div class="border p-5 rounded-xl"><h4 class="font-bold mb-2">Berita Acara</h4><p class="text-sm text-slate-500 mb-4">Hasil perolehan suara.</p><button onclick="cetakBA()" class="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm w-full">Cetak</button></div>
+      <div class="border p-5 rounded-xl"><h4 class="font-bold mb-2">Daftar Hadir</h4><p class="text-sm text-slate-500 mb-4">Daftar pemilih + token.</p><button onclick="cetakHadir()" class="bg-amber-500 text-slate-900 font-bold px-4 py-2 rounded-lg text-sm w-full">Cetak</button></div>
+      <div class="border p-5 rounded-xl"><h4 class="font-bold mb-2">Kartu Pemilih</h4><p class="text-sm text-slate-500 mb-4">Kartu berisi token, 10 per lembar A4.</p><button onclick="cetakKartu()" class="bg-brand text-white px-4 py-2 rounded-lg text-sm w-full">Cetak</button></div>
+      <div class="border p-5 rounded-xl"><h4 class="font-bold mb-2">Ekspor Excel</h4><p class="text-sm text-slate-500 mb-4">Hasil + status pemilih.</p><button onclick="eksporHasil()" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm w-full">Unduh</button></div>
+     </div>
+    </div>
+   </section>
+
+   <section id="tab-pengaturan" class="tab hidden">
+    <div class="max-w-3xl mx-auto bg-white p-6 rounded-2xl shadow-sm border space-y-4">
+     <h3 class="text-lg font-bold flex items-center gap-2"><i data-lucide="settings" class="w-5 h-5 text-amber-500"></i> Pengaturan</h3>
+     <div class="flex flex-wrap items-center justify-between gap-3 border p-4 rounded-xl"><div><b>Status pemungutan suara</b><p class="text-sm text-slate-500">Saat ditutup, pemilih tidak bisa login.</p></div><button id="btnStatus" onclick="toggleStatus()" class="px-4 py-2 rounded-lg text-sm font-bold"></button></div>
+     <div class="flex flex-wrap items-center justify-between gap-3 border p-4 rounded-xl"><div><b>Warna tampilan</b><p class="text-sm text-slate-500">Pilih warna tema aplikasi.</p></div><div id="themeBtns" class="flex flex-wrap gap-2"></div></div>
+     <div class="flex flex-wrap items-center justify-between gap-3 border p-4 rounded-xl"><div><b>Ganti PIN Admin</b><p class="text-sm text-slate-500">Disimpan dalam bentuk hash.</p></div><button onclick="gantiPin()" class="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm">Ganti PIN</button></div>
+     <div class="flex flex-wrap items-center justify-between gap-3 border p-4 rounded-xl"><div><b>Cadangkan & pulihkan data</b><p class="text-sm text-slate-500">Data tersimpan di Firebase dan tersinkron realtime. Cadangan JSON tetap berguna sebagai arsip.</p></div>
+      <div class="flex gap-2"><button onclick="backup()" class="bg-brand text-white px-4 py-2 rounded-lg text-sm">Cadangkan</button>
+      <label class="bg-slate-100 px-4 py-2 rounded-lg text-sm cursor-pointer">Pulihkan<input type="file" accept=".json" class="hidden" onchange="restore(event)"></label></div></div>
+     <div class="flex flex-wrap items-center justify-between gap-3 border border-red-200 bg-red-50 p-4 rounded-xl"><div><b class="text-red-700">Reset suara</b><p class="text-sm text-red-600">Nol-kan semua suara &amp; status pemilih.</p></div><button onclick="resetSuara()" class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm">Reset</button></div>
+    </div>
+   </section>
+  </main>
+ </div>
+</div>
+
+<!-- BILIK SUARA -->
+<div id="voterDashboard" class="hidden min-h-screen w-full flex flex-col bg-slate-50">
+ <header class="bg-brand text-white sticky top-0 z-40 border-b-4 border-amber-400">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+   <div class="flex items-center gap-4">
+    <img src="logo_sekolah.png" class="h-12 w-12 object-contain" onerror="this.style.display='none'">
+    <img src="image.png" class="h-12 w-12 object-contain" onerror="this.style.display='none'">
+    <div><h1 class="text-lg md:text-xl font-bold">BILIK SUARA E-VOTING</h1><p class="text-amber-300 text-xs font-semibold tracking-widest uppercase">MTs Darul Hikmah</p></div>
+   </div>
+   <div class="flex items-center gap-6">
+    <div class="text-right"><p id="vName" class="font-bold text-sm uppercase"></p><p id="vNis" class="text-slate-400 text-xs"></p></div>
+    <button onclick="logout()" class="text-slate-300 hover:text-white flex items-center gap-2 text-sm bg-white/5 hover:bg-white/10 px-4 py-2 rounded-lg"><i data-lucide="log-out" class="w-4 h-4"></i> Keluar</button>
+   </div>
+  </div>
+ </header>
+ <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full">
+  <div class="text-center mb-10"><h2 class="text-3xl font-bold mb-2">Tentukan Pilihan Anda</h2><p class="text-slate-500">Pilih satu pasangan calon yang menurut Anda paling pantas memimpin OSIS MTs Darhik.</p></div>
+  <div id="bilik" class="flex flex-wrap justify-center gap-8"></div>
+ </main>
+</div>
+
+<!-- MODAL PASLON -->
+<div id="modalK" class="hidden fixed inset-0 bg-slate-900/80 z-50 flex items-start justify-center p-4 overflow-y-auto">
+ <div class="bg-white rounded-2xl w-full max-w-2xl shadow-2xl my-8">
+  <div class="p-5 border-b flex justify-between items-center"><h3 id="mkTitle" class="text-xl font-bold"></h3><button onclick="$('modalK').classList.add('hidden')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-6 h-6"></i></button></div>
+  <form id="fk" class="p-5 space-y-4" onsubmit="return false">
+   <input type="hidden" id="kId"><input type="hidden" id="kFoto">
+   <div class="grid grid-cols-2 gap-4">
+    <div><label class="text-sm font-medium">Nomor Urut</label><input type="number" min="1" id="kNo" required class="w-full px-3 py-2 rounded-lg border"></div>
+    <div><label class="text-sm font-medium">Foto Paslon (portrait)</label><input type="file" id="kFile" accept="image/*" class="w-full text-sm"></div>
+   </div>
+   <div class="grid grid-cols-2 gap-4">
+    <div><label class="text-sm font-medium">Calon Ketua</label><input id="kKetua" required class="w-full px-3 py-2 rounded-lg border"></div>
+    <div><label class="text-sm font-medium">Calon Wakil</label><input id="kWakil" required class="w-full px-3 py-2 rounded-lg border"></div>
+   </div>
+   <div><label class="text-sm font-medium">Visi</label><textarea id="kVisi" rows="3" class="w-full px-3 py-2 rounded-lg border"></textarea></div>
+   <div><label class="text-sm font-medium">Misi & Program Kerja</label><textarea id="kMisi" rows="4" class="w-full px-3 py-2 rounded-lg border"></textarea></div>
+   <div class="flex justify-end gap-3"><button type="button" onclick="$('modalK').classList.add('hidden')" class="px-5 py-2 rounded-lg hover:bg-slate-100">Batal</button><button type="button" onclick="simpanK()" class="bg-slate-900 text-white px-5 py-2 rounded-lg">Simpan</button></div>
+  </form>
+ </div>
+</div>
+
+<div id="printContainer" class="p-8 text-black bg-white"></div>
+
+<script>
+const K='evoting_kandidat',P='evoting_pemilih',C='evoting_cfg';
+const $=i=>document.getElementById(i);
+/* ---------- FIREBASE (isi dari Project settings → Web app) ---------- */
+const FIREBASE_CONFIG={apiKey:"AIzaSyCVZU1nhYim9TrPsAlWd4VWXGzwUtmI6nE",authDomain:"e-voting-pilketos-darhik.firebaseapp.com",databaseURL:"https://e-voting-pilketos-darhik-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"e-voting-pilketos-darhik",storageBucket:"e-voting-pilketos-darhik.firebasestorage.app",messagingSenderId:"780292627803",appId:"1:780292627803:web:346d4aae6634f9e2be4e7e"};
+const FB_OK=!FIREBASE_CONFIG.apiKey.startsWith('ISI');
+const JJ='mts',BASE='',ref=p=>db.ref(BASE+p);
+let db=null,online=false,adminSync=false,_r;const READY=new Promise(r=>_r=r);
+const cache={[K]:[],[P]:[],[C]:{},S:{}},PATH={[K]:'kandidat',[P]:'pemilih',[C]:'config'};
+const nk=s=>String(s).trim().replace(/[.#$\[\]\/]/g,'_');
+const get=(k,d)=>{const v=cache[k];return v==null?d:JSON.parse(JSON.stringify(v))};
+const put=(k,v)=>{const old=cache[k];cache[k]=v;if(!db)return;
+ if(!Array.isArray(v))return ref(PATH[k]).set(v);
+ const o=Object.fromEntries((old||[]).map(x=>[x.id,JSON.stringify(x)])),u={};
+ v.forEach(x=>{if(o[x.id]!==JSON.stringify(x))u[x.id]=x;delete o[x.id]});Object.keys(o).forEach(i=>u[i]=null);
+ return Object.keys(u).length?ref(PATH[k]).update(u):0};
+function conn(){const e=$('conn');if(!e)return;e.className='hidden md:inline text-xs font-semibold px-3 py-1.5 rounded-full '+(online?'bg-green-100 text-green-700':'bg-red-100 text-red-700');e.textContent=online?'● Realtime aktif':'● Offline'}
+function startSync(){const live=()=>sessionStorage.getItem('admin')&&refresh();
+ db.ref('.info/connected').on('value',s=>{online=!!s.val();conn()});
+ ref('config').on('value',s=>{cache[C]=s.val()||{};applyTheme(cfg().theme);_r();live()},e=>{_r();Swal.fire('Firebase menolak akses','Periksa Rules database.','error')});
+ ref('kandidat').on('value',s=>{cache[K]=Object.values(s.val()||{});live()})}
+function startAdminSync(){if(adminSync||!db)return;adminSync=true;
+ ref('suara').on('value',s=>{cache.S=s.val()||{};refresh()});
+ ref('pemilih').on('value',s=>{cache[P]=Object.values(s.val()||{});refresh()})}
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const cfg=()=>({open:true,pin:null,...get(C,{})});
+const cands=()=>get(K,[]).map(c=>({...c,suara:cache.S[c.id]||0})).sort((a,b)=>a.noUrut-b.noUrut);
+const sha=async s=>{if(!(window.crypto&&crypto.subtle)){let h=5381;for(const c of s)h=(h*33^c.charCodeAt(0))>>>0;return'x'+h}
+ return[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(b=>b.toString(16).padStart(2,'0')).join('')};
+const icons=()=>lucide.createIcons();
+const toast=(t,i='success')=>Swal.fire({icon:i,title:t,showConfirmButton:false,timer:1400});
+let chart=null,idle=null,curTab='quickCount';
+const TABS=[['quickCount','bar-chart-2','Quick Count'],['kandidat','users','Data Paslon'],['pemilih','user-check','Data Pemilih'],['cetak','printer','Cetak Laporan'],['pengaturan','settings','Pengaturan']];
+
+const THEMES={dongker:['#0a1a3f','#12306b','#2a4a9a','Biru Dongker'],ungu:['#6d28d9','#7c3aed','#a78bfa','Ungu'],oranye:['#c2410c','#ea580c','#fb923c','Oranye'],marun:['#9f1239','#be123c','#fb7185','Marun'],biru:['#1d4ed8','#2563eb','#60a5fa','Biru'],hijau:['#047857','#059669','#34d399','Hijau'],teal:['#0f766e','#0d9488','#2dd4bf','Teal'],ungu:['#6d28d9','#7c3aed','#a78bfa','Ungu'],marun:['#9f1239','#be123c','#fb7185','Marun']};
+function applyTheme(n,save){const t=THEMES[n]||THEMES.dongker,r=document.documentElement.style;r.setProperty('--bd',t[0]);r.setProperty('--b1',t[1]);r.setProperty('--b2',t[2]);if(save){const c=cfg();c.theme=n;put(C,c)}}
+function genToken(used){const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let t;
+ do{t=[...crypto.getRandomValues(new Uint8Array(6))].map(b=>a[b%a.length]).join('')}while(used&&used.has(t));return t}
+
+document.addEventListener('DOMContentLoaded',()=>{
+ if(sessionStorage.getItem('jj')!==JJ){sessionStorage.clear();sessionStorage.setItem('jj',JJ)}
+ if(!FB_OK)$('setup').classList.remove('hidden');else{firebase.initializeApp(FIREBASE_CONFIG);db=firebase.database();startSync()}
+ applyTheme(cfg().theme);
+ $('themeBtns').innerHTML=Object.entries(THEMES).map(([k,t])=>`<button onclick="applyTheme('${k}',1)" class="px-3 py-2 rounded-lg text-white text-sm font-bold" style="background:${t[1]}">${t[3]}</button>`).join('');
+ $('nav').innerHTML=TABS.map(([id,ic,l])=>`<button id="bt-${id}" onclick="tab('${id}')" class="w-full flex items-center justify-center md:justify-start gap-3 px-3 py-3 rounded-lg text-sm font-medium"><i data-lucide="${ic}" class="w-5 h-5"></i><span class="hidden md:inline">${l}</span></button>`).join('');
+ $('kFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=ev=>{const im=new Image();im.onload=()=>{const s=Math.min(1,500/im.height),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;
+   c.getContext('2d').drawImage(im,0,0,c.width,c.height);$('kFoto').value=c.toDataURL('image/jpeg',.8)};im.src=ev.target.result};r.readAsDataURL(f)});
+ if(sessionStorage.getItem('admin')==='1')showAdmin();
+ else if(sessionStorage.getItem('voter'))showVoter();
+ icons();
+ ['click','keydown','touchstart'].forEach(e=>document.addEventListener(e,resetIdle));
+});
+
+function toggleLogin(){$('formPemilih').classList.toggle('hidden');$('formAdmin').classList.toggle('hidden')}
+function resetIdle(){clearTimeout(idle);if(sessionStorage.getItem('voter'))idle=setTimeout(()=>{sessionStorage.clear();location.reload()},180000)}
+
+function logout(){Swal.fire({title:'Yakin ingin keluar?',icon:'warning',showCancelButton:true,confirmButtonColor:'#0f172a',confirmButtonText:'Ya, Keluar',cancelButtonText:'Batal'})
+ .then(r=>{if(r.isConfirmed){sessionStorage.clear();location.reload()}})}
+
+async function loginAdmin(e){e.preventDefault();await READY;const pin=$('adminPin').value,c=cfg(),h=await sha(pin);
+ const ok=c.pin?h===c.pin:pin==='123456';
+ if(!ok)return Swal.fire({icon:'error',title:'Akses Ditolak',text:'PIN Panitia salah!'});
+ sessionStorage.setItem('admin','1');showAdmin();
+ if(!c.pin){await Swal.fire({icon:'warning',title:'Ganti PIN default',text:'Anda masih memakai PIN bawaan. Segera ganti demi keamanan.'});gantiPin()}}
+
+function showAdmin(){startAdminSync();$('loginScreen').classList.add('hidden');$('adminDashboard').classList.remove('hidden');tab('quickCount')}
+
+function tab(id){curTab=id;document.querySelectorAll('.tab').forEach(e=>e.classList.add('hidden'));$('tab-'+id).classList.remove('hidden');
+ TABS.forEach(([t])=>{$('bt-'+t).className='w-full flex items-center justify-center md:justify-start gap-3 px-3 py-3 rounded-lg text-sm font-medium '+(t===id?'bg-white text-brand shadow':'text-white hover:bg-white/20')});
+ refresh();icons()}
+
+function refresh(){status();if(curTab==='quickCount')stats();if(curTab==='kandidat')renderK();if(curTab==='pemilih')renderPemilih();icons()}
+
+function status(){const o=cfg().open;$('statusPemilu').className='px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap border '+(o?'bg-green-100 text-green-700 border-green-200':'bg-red-100 text-red-700 border-red-200');
+ $('statusPemilu').textContent=o?'● Pemilihan Aktif':'● Pemilihan Ditutup';
+ const b=$('btnStatus');b.textContent=o?'Tutup Pemilihan':'Buka Pemilihan';b.className='px-4 py-2 rounded-lg text-sm font-bold '+(o?'bg-red-600 text-white':'bg-green-600 text-white')}
+function toggleStatus(){const c=cfg();c.open=!c.open;put(C,c);status();toast(c.open?'Pemilihan dibuka':'Pemilihan ditutup')}
+
+async function gantiPin(){const {value:v}=await Swal.fire({title:'Ganti PIN Admin',html:'<input id="p1" type="password" class="swal2-input" placeholder="PIN baru (min. 6 karakter)"><input id="p2" type="password" class="swal2-input" placeholder="Ulangi PIN baru">',
+ showCancelButton:true,confirmButtonText:'Simpan',cancelButtonText:'Nanti',preConfirm:()=>{const a=$('p1').value,b=$('p2').value;
+  if(a.length<6||a==='123456'){Swal.showValidationMessage('PIN minimal 6 karakter dan bukan 123456');return false}
+  if(a!==b){Swal.showValidationMessage('PIN tidak sama');return false}return a}});
+ if(v){const c=cfg();c.pin=await sha(v);put(C,c);toast('PIN diperbarui')}}
+
+/* ---------- PEMILIH ---------- */
+async function loginPemilih(e){e.preventDefault();await READY;
+ if(!cfg().open)return Swal.fire({icon:'info',title:'Pemilihan Ditutup',text:'Pemungutan suara belum dibuka atau sudah selesai.'});
+ const nis=$('voterNis').value.trim(),tk=$('voterToken').value.trim().toUpperCase();
+ const v0=(await ref('pemilih/'+nk(nis)).get()).val(),v=v0&&v0.token===tk&&v0.nis===nis?v0:null;
+ if(!v)return Swal.fire({icon:'error',title:'Data Tidak Ditemukan',text:'NIS/NIP atau Token salah.'});
+ if(v.status==='sudah')return Swal.fire({icon:'warning',title:'Maaf',text:'Hak suara Anda sudah digunakan.'});
+ sessionStorage.setItem('voter',v.id);showVoter();toast('Selamat Datang, '+v.nama)}
+
+async function showVoter(){const v=(await ref('pemilih/'+sessionStorage.getItem('voter')).get()).val();
+ if(!v||v.status==='sudah'){sessionStorage.clear();return location.reload()}
+ $('loginScreen').classList.add('hidden');$('voterDashboard').classList.remove('hidden');
+ $('vName').textContent=v.nama;$('vNis').textContent=v.nis+' • '+v.kelas;resetIdle();
+ const cs=cands();
+ $('bilik').innerHTML=cs.length?cs.map(c=>`
+ <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm flex flex-col overflow-hidden border hover:-translate-y-2 transition">
+  <div class="bg-brand p-8 flex justify-center relative">
+   <div class="absolute top-4 right-4 bg-amber-500 w-10 h-10 rounded-full flex items-center justify-center font-black text-xl border-2 bd-brand z-10">${c.noUrut}</div>
+   <div class="w-48 h-64 gold-border bg-brand-d"><img src="${esc(c.foto)||''}" class="w-full h-full object-cover object-top rounded-xl bg-slate-200" onerror="this.removeAttribute('src')"></div>
+  </div>
+  <div class="p-6 text-center flex flex-col flex-grow">
+   <h3 class="text-xl font-bold mb-1">${esc(c.ketua)}</h3><p class="text-sm text-slate-500 mb-4">Wakil: ${esc(c.wakil)}</p>
+   <div class="text-left bg-slate-50 p-4 rounded-lg border mb-6 h-48 overflow-y-auto sb text-sm flex-grow">
+    <p class="font-bold text-amber-600 text-[11px] uppercase">Visi:</p><p class="mb-4 whitespace-pre-wrap">${esc(c.visi)}</p>
+    <p class="font-bold text-amber-600 text-[11px] uppercase">Misi:</p><p class="whitespace-pre-wrap">${esc(c.misi)}</p>
+   </div>
+   <button onclick="konfirmasi('${esc(c.id)}')" class="w-full bg-brand hover:bg-brand-d text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 mt-auto"><i data-lucide="check-square" class="w-5 h-5 text-amber-400"></i> COBLOS PASLON ${c.noUrut}</button>
+  </div></div>`).join(''):'<div class="text-center w-full py-20 text-slate-500 bg-white rounded-2xl shadow-sm">Belum ada paslon yang didaftarkan panitia.</div>';
+ icons()}
+
+function konfirmasi(id){const c=cands().find(x=>x.id===id);if(!c)return;
+ Swal.fire({title:`Pilih Paslon Nomor ${c.noUrut}?`,html:`<b>${esc(c.ketua)}</b> &amp; <b>${esc(c.wakil)}</b><br><small>Pilihan yang sudah dikirim tidak dapat diubah.</small>`,icon:'question',showCancelButton:true,confirmButtonColor:'#0f172a',cancelButtonText:'Batal',confirmButtonText:'Ya, Coblos!'})
+ .then(r=>{if(r.isConfirmed)kirim(id)})}
+
+async function kirim(id){
+ if(!cfg().open){sessionStorage.clear();return Swal.fire('Pemilihan ditutup','','info').then(()=>location.reload())}
+ const r=await ref('pemilih/'+sessionStorage.getItem('voter')).transaction(p=>p===null?p:(p.status==='belum'?{...p,status:'sudah'}:undefined));
+ if(!r.committed||!r.snapshot.val()){sessionStorage.clear();return Swal.fire('Hak suara sudah digunakan','','warning').then(()=>location.reload())}
+ await ref('suara/'+id).transaction(n=>(n||0)+1);
+ sessionStorage.clear();
+ Swal.fire({icon:'success',title:'Terima Kasih!',text:'Suara Anda berhasil direkam.',showConfirmButton:false,timer:2000}).then(()=>location.reload())}
+
+/* ---------- PASLON ---------- */
+function modalKandidat(id){$('fk').reset();$('kFoto').value='';$('kId').value='';
+ $('mkTitle').textContent=id?'Edit Data Paslon':'Tambah Paslon Baru';
+ if(id){const c=get(K,[]).find(x=>x.id===id);$('kId').value=c.id;$('kNo').value=c.noUrut;$('kKetua').value=c.ketua;$('kWakil').value=c.wakil;$('kVisi').value=c.visi;$('kMisi').value=c.misi;$('kFoto').value=c.foto||''}
+ $('modalK').classList.remove('hidden')}
+window.modalKandidat=modalKandidat;
+
+function simpanK(){const id=$('kId').value,cs=get(K,[]),no=parseInt($('kNo').value),ketua=$('kKetua').value.trim(),wakil=$('kWakil').value.trim();
+ if(!no||!ketua||!wakil)return Swal.fire('Error','Nomor urut, nama Ketua & Wakil wajib diisi!','error');
+ if(cs.some(c=>c.noUrut===no&&c.id!==id))return Swal.fire('Error','Nomor urut sudah dipakai paslon lain.','error');
+ const old=cs.find(c=>c.id===id),n={id:id||Date.now().toString(),noUrut:no,foto:$('kFoto').value,ketua,wakil,visi:$('kVisi').value,misi:$('kMisi').value};
+ old?cs[cs.indexOf(old)]=n:cs.push(n);
+ try{put(K,cs)}catch{return Swal.fire('Penyimpanan penuh','Gunakan foto berukuran lebih kecil.','error')}
+ $('modalK').classList.add('hidden');renderK();toast('Tersimpan')}
+
+function hapusK(id){Swal.fire({title:'Hapus Paslon?',text:'Data dan suaranya akan hilang.',icon:'warning',showCancelButton:true,confirmButtonText:'Ya, Hapus',cancelButtonText:'Batal'})
+ .then(r=>{if(r.isConfirmed){put(K,get(K,[]).filter(c=>c.id!==id));ref('suara/'+id).remove();renderK()}})}
+
+function renderK(){$('kandidatGrid').innerHTML=cands().map(c=>`
+ <div class="border rounded-xl overflow-hidden shadow-sm bg-white flex flex-col">
+  <div class="flex items-center gap-4 p-4 border-b bg-slate-50">
+   <div class="w-16 h-16 bg-slate-200 rounded-lg overflow-hidden shrink-0"><img src="${esc(c.foto)}" class="w-full h-full object-cover object-top" onerror="this.removeAttribute('src')"></div>
+   <div><span class="text-xs font-bold bg-amber-100 text-amber-700 px-2 py-1 rounded">No. ${c.noUrut}</span><h4 class="font-bold mt-1">${esc(c.ketua)}</h4><p class="text-xs text-slate-500">Wakil: ${esc(c.wakil)}</p></div>
+  </div>
+  <p class="p-4 text-xs text-slate-600 flex-grow"><b>Visi:</b> ${esc(c.visi).slice(0,160)}</p>
+  <div class="p-3 bg-slate-50 border-t flex gap-2 justify-end">
+   <button onclick="modalKandidat('${esc(c.id)}')" class="px-3 py-1.5 bg-blue-100 text-blue-700 rounded text-xs font-bold">Edit</button>
+   <button onclick="hapusK('${esc(c.id)}')" class="px-3 py-1.5 bg-red-100 text-red-700 rounded text-xs font-bold">Hapus</button>
+  </div></div>`).join('')||'<p class="text-slate-500">Belum ada paslon.</p>'}
+
+/* ---------- DPT ---------- */
+function importExcel(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();
+ r.onload=e=>{try{
+  const wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'}),rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});
+  const ex=get(P,[]),nisSet=new Set(ex.map(p=>p.nis)),tk=new Set(ex.map(p=>p.token)),baru=[];let skip=0;
+  rows.forEach(row=>{const k=Object.keys(row),f=s=>k.find(x=>x.toLowerCase().includes(s));
+   const kn=f('nis')||f('nip'),nm=f('nama'),kl=f('kelas');if(!kn||!nm||row[kn]==='')return;
+   const nis=String(row[kn]).trim();if(nisSet.has(nis)){skip++;return}nisSet.add(nis);
+   const t=genToken(tk);tk.add(t);baru.push({id:nk(nis),nis,nama:String(row[nm]).trim(),kelas:kl?String(row[kl]).trim():'-',token:t,status:'belum'})});
+  if(!baru.length)return Swal.fire('Gagal','Tidak ada data baru yang valid. Periksa judul kolom (NIS/NIP, Nama Lengkap, Kelas).','error');
+  put(P,[...ex,...baru]);renderPemilih();Swal.fire('Berhasil',`${baru.length} pemilih diimpor${skip?`, ${skip} NIS ganda dilewati`:''}.`,'success')
+ }catch{Swal.fire('Gagal','File Excel tidak dapat dibaca.','error')}};
+ r.readAsArrayBuffer(f);ev.target.value=''}
+
+function templateExcel(){const ws=XLSX.utils.aoa_to_sheet([['NIS/NIP','Nama Lengkap','Kelas'],['1234567890','Contoh Siswa','VII A']]),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'DPT');XLSX.writeFile(wb,'template_dpt.xlsx')}
+
+async function tambahPemilih(){const {value:v}=await Swal.fire({title:'Tambah Pemilih',html:'<input id="a1" class="swal2-input" placeholder="NIS/NIP"><input id="a2" class="swal2-input" placeholder="Nama Lengkap"><input id="a3" class="swal2-input" placeholder="Kelas / Jabatan">',showCancelButton:true,confirmButtonText:'Simpan',cancelButtonText:'Batal',
+ preConfirm:()=>{const o={nis:$('a1').value.trim(),nama:$('a2').value.trim(),kelas:$('a3').value.trim()||'-'};
+  if(!o.nis||!o.nama){Swal.showValidationMessage('NIS dan nama wajib diisi');return false}
+  if(get(P,[]).some(p=>p.nis===o.nis)){Swal.showValidationMessage('NIS sudah terdaftar');return false}return o}});
+ if(v){const ps=get(P,[]);ps.push({id:nk(v.nis),...v,token:genToken(new Set(ps.map(p=>p.token))),status:'belum'});put(P,ps);renderPemilih()}}
+
+function hapusSemuaPemilih(){Swal.fire({title:'Hapus SEMUA pemilih?',text:'Tidak bisa dibatalkan!',icon:'error',showCancelButton:true,confirmButtonColor:'#d33',confirmButtonText:'Ya, Kosongkan',cancelButtonText:'Batal'})
+ .then(r=>{if(r.isConfirmed){put(P,[]);renderPemilih()}})}
+function hapusP(id){Swal.fire({title:'Hapus pemilih ini?',icon:'warning',showCancelButton:true,confirmButtonText:'Hapus',cancelButtonText:'Batal'}).then(r=>{if(r.isConfirmed){put(P,get(P,[]).filter(x=>x.id!==id));renderPemilih()}})}
+function tokenBaru(id){const ps=get(P,[]),p=ps.find(x=>x.id===id);if(!p||p.status==='sudah')return;p.token=genToken(new Set(ps.map(x=>x.token)));put(P,ps);renderPemilih()}
+
+function editP(id){const ps=get(P,[]),p=ps.find(x=>x.id===id);if(!p)return;
+ Swal.fire({title:'Edit Pemilih',html:`<input id="e1" class="swal2-input" value="${esc(p.nis)}"><input id="e2" class="swal2-input" value="${esc(p.nama)}"><input id="e3" class="swal2-input" value="${esc(p.kelas)}">`,showCancelButton:true,confirmButtonText:'Simpan',cancelButtonText:'Batal',
+  preConfirm:()=>{const nis=$('e1').value.trim();if(!nis||!$('e2').value.trim()){Swal.showValidationMessage('NIS dan nama wajib diisi');return false}
+   if(ps.some(x=>x.nis===nis&&x.id!==id)){Swal.showValidationMessage('NIS sudah dipakai');return false}return{nis,nama:$('e2').value.trim(),kelas:$('e3').value.trim()}}})
+ .then(r=>{if(r.isConfirmed){Object.assign(p,r.value);p.id=nk(p.nis);put(P,ps);renderPemilih()}})}
+
+function renderPemilih(){const q=($('cariPemilih').value||'').toLowerCase(),all=get(P,[]);
+ const ps=all.filter(p=>(p.nis+p.nama+p.kelas).toLowerCase().includes(q));
+ $('tbPemilih').innerHTML=ps.length?ps.map((p,i)=>`<tr class="hover:bg-slate-50"><td class="py-3 px-4">${i+1}</td><td class="py-3 px-4 font-medium">${esc(p.nis)}</td><td class="py-3 px-4">${esc(p.nama)}</td><td class="py-3 px-4">${esc(p.kelas)}</td>
+  <td class="py-3 px-4 text-center"><span class="bg-slate-100 px-2 py-1 rounded font-mono text-xs border tracking-wider">${p.token}</span></td>
+  <td class="py-3 px-4 text-center"><span class="px-2 py-1 rounded text-xs font-bold ${p.status==='sudah'?'bg-green-100 text-green-700':'bg-amber-100 text-amber-700'}">${p.status==='sudah'?'SUDAH MEMILIH':'BELUM'}</span></td>
+  <td class="py-3 px-4 text-center whitespace-nowrap">
+   <button onclick="editP('${p.id}')" class="text-blue-600 p-1 bg-blue-50 rounded" title="Edit"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+   ${p.status==='sudah'?'':`<button onclick="tokenBaru('${p.id}')" class="text-amber-600 p-1 bg-amber-50 rounded ml-1" title="Token baru"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>`}
+   <button onclick="hapusP('${p.id}')" class="text-red-600 p-1 bg-red-50 rounded ml-1" title="Hapus"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td></tr>`).join('')
+  :`<tr><td colspan="7" class="text-center py-8 text-slate-500">${all.length?'Tidak ada hasil pencarian.':'Belum ada data pemilih. Silakan import dari Excel.'}</td></tr>`;
+ icons()}
+
+/* ---------- QUICK COUNT ---------- */
+function stats(){const ps=get(P,[]),cs=cands(),tot=ps.length,sdh=ps.filter(p=>p.status==='sudah').length,sum=cs.reduce((a,c)=>a+(c.suara||0),0);
+ const card=(l,v,c)=>`<div class="bg-white p-5 rounded-2xl shadow-sm border"><p class="text-sm text-slate-500">${l}</p><h4 class="text-3xl font-bold ${c}">${v}</h4></div>`;
+ $('stats').innerHTML=card('Total DPT',tot,'')+card('Sudah Memilih',sdh,'text-green-600')+card('Belum Memilih',tot-sdh,'text-amber-600')+card('Partisipasi',(tot?(sdh/tot*100).toFixed(1):0)+'%','text-blue-600');
+ const labels=cs.length?cs.map(c=>`Paslon ${c.noUrut} (${c.ketua.split(' ')[0]})`):['Belum ada paslon'],data=cs.length?cs.map(c=>c.suara||0):[0];
+ if(chart){chart.data.labels=labels;chart.data.datasets[0].data=data;chart.update('none')}
+ else chart=new Chart($('voteChart').getContext('2d'),{type:'bar',data:{labels,datasets:[{label:'Suara',data,backgroundColor:'#f59e0b',borderRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}});
+ $('rank').innerHTML='<h3 class="font-bold mb-3">Peringkat</h3>'+([...cs].sort((a,b)=>(b.suara||0)-(a.suara||0)).map(c=>{const pc=sum?((c.suara||0)/sum*100):0;
+  return`<div class="mb-3"><div class="flex justify-between text-sm"><span>No. ${c.noUrut} — ${esc(c.ketua)} &amp; ${esc(c.wakil)}</span><b>${c.suara||0} suara (${pc.toFixed(1)}%)</b></div><div class="h-2 bg-slate-100 rounded"><div class="h-2 bg-amber-500 rounded" style="width:${pc}%"></div></div></div>`}).join('')||'<p class="text-slate-500 text-sm">Belum ada paslon.</p>')}
+
+function hasil(){const cs=cands(),mx=Math.max(0,...cs.map(c=>c.suara||0));return{cs,mx,top:mx>0?cs.filter(c=>(c.suara||0)===mx):[]}}
+
+/* ---------- CETAK & EKSPOR ---------- */
+const tgl=()=>new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+const hid="onerror=\"this.style.visibility='hidden'\"";
+function kop(){return`<div class="kop"><img src="logo_sekolah.png" ${hid}><div class="t"><div style="font-size:13pt;font-weight:bold">KOMISI PEMILIHAN OSIS (KPO)</div><div style="font-size:16pt;font-weight:bold">MADRASAH TSANAWIYAH DARUL HIKMAH</div><div style="font-size:10pt">Desa Gunungsari, Kecamatan Cikatomas, Kabupaten Tasikmalaya</div><div style="font-size:10pt;font-weight:bold">Periode 2026/2027</div></div><img src="image.png" ${hid}></div>`}
+function cetak(h){const pc=$('printContainer');pc.innerHTML=h;
+ Promise.all([...pc.querySelectorAll('img')].map(i=>i.complete?0:new Promise(r=>{i.onload=i.onerror=r}))).then(()=>setTimeout(()=>window.print(),150))}
+const ttd=()=>`<div style="margin-left:55%;text-align:center;margin-top:16px;page-break-inside:avoid"><p>Gunungsari, ${tgl()}<br>Ketua KPO MTs Darul Hikmah,</p><p style="margin-top:60px"><b><u>( ........................................ )</u></b></p></div>`;
+
+function cetakBA(){const {cs,top}=hasil(),ps=get(P,[]),tot=ps.length,sdh=ps.filter(p=>p.status==='sudah').length;
+ const kesimpulan=top.length===1?`Berdasarkan perolehan suara terbanyak, Pasangan Calon <b>Nomor Urut ${top[0].noUrut} (${esc(top[0].ketua)} &amp; ${esc(top[0].wakil)})</b> ditetapkan sebagai Ketua dan Wakil Ketua OSIS Terpilih Periode 2026/2027.`
+  :top.length>1?`Perolehan suara tertinggi <b>seri</b> antara Paslon Nomor ${top.map(t=>t.noUrut).join(' dan ')}. Panitia memutuskan tindak lanjut sesuai tata tertib pemilihan.`:'Belum ada suara masuk.';
+ cetak(`<div class="doc">${kop()}<h3>BERITA ACARA HASIL PEMILIHAN KETUA OSIS</h3>
+ <p style="text-align:justify;margin-bottom:12px">Berdasarkan hasil pemungutan suara elektronik (E-Voting), Panitia KPO MTs Darul Hikmah menyatakan rincian perolehan suara sebagai berikut:</p>
+ <table class="tb" style="margin-bottom:14px"><thead><tr><th style="width:18mm">No. Urut</th><th>Pasangan Calon</th><th style="width:30mm">Suara</th></tr></thead><tbody>
+ ${cs.map(c=>`<tr><td class="c"><b>${c.noUrut}</b></td><td>Ketua: ${esc(c.ketua)}<br>Wakil: ${esc(c.wakil)}</td><td class="c"><b style="font-size:14pt">${c.suara||0}</b></td></tr>`).join('')}</tbody></table>
+ <table class="tb" style="width:auto;margin-bottom:14px"><tr><td>Daftar Pemilih Tetap (DPT)</td><td class="c" style="width:30mm">${tot} orang</td></tr><tr><td>Suara masuk</td><td class="c">${sdh} suara</td></tr><tr><td>Partisipasi</td><td class="c">${tot?(sdh/tot*100).toFixed(1):0}%</td></tr></table>
+ <p style="text-align:justify">${kesimpulan}</p>${ttd()}</div>`)}
+
+function cetakHadir(){const ps=get(P,[]).sort((a,b)=>a.kelas.localeCompare(b.kelas,'id')||a.nama.localeCompare(b.nama,'id')),n=28,pages=[];
+ for(let i=0;i<ps.length;i+=n)pages.push(ps.slice(i,i+n));if(!pages.length)pages.push([]);
+ const tot=pages.length+(pages[pages.length-1].length>18?1:0);
+ const foot=(i)=>`<div class="pgno">Halaman ${i} dari ${tot}</div>`;
+ let h=pages.map((pg,pi)=>`<div class="doc pg">${kop()}<h3>DAFTAR HADIR PEMILIH</h3>
+ <table class="tb hadir"><thead><tr><th style="width:12mm">No</th><th style="width:34mm">NIS / NIP</th><th>Nama Lengkap</th><th style="width:24mm">Kelas</th><th style="width:48mm">Tanda Tangan</th></tr></thead><tbody>
+ ${pg.map((p,i)=>{const g=pi*n+i+1;return`<tr><td class="c">${g}</td><td class="c">${esc(p.nis)}</td><td>${esc(p.nama)}</td><td class="c">${esc(p.kelas)}</td><td style="text-align:${g%2?'left':'right'};color:#666">${g}. ..........</td></tr>`}).join('')}</tbody></table>
+ ${pi===pages.length-1&&pg.length<=18?`<p style="margin-top:8px;font-size:10pt">Jumlah pemilih terdaftar: <b>${ps.length}</b> orang</p>${ttd()}`:''}${foot(pi+1)}</div>`).join('');
+ if(pages[pages.length-1].length>18)h+=`<div class="doc pg">${kop()}<p style="font-size:10pt">Jumlah pemilih terdaftar: <b>${ps.length}</b> orang</p>${ttd()}${foot(tot)}</div>`;
+ cetak(h)}
+
+async function cetakKartu(){const ps=get(P,[]);if(!ps.length)return Swal.fire('Belum ada pemilih','Import data pemilih terlebih dahulu.','info');
+ const kl=[...new Set(ps.map(p=>p.kelas))].sort((a,b)=>a.localeCompare(b,'id')),opts={'*':'Semua kelas / jabatan'};kl.forEach(k=>opts[k]=k);
+ const {value:v}=await Swal.fire({title:'Cetak Kartu Pemilih',input:'select',inputOptions:opts,inputValue:'*',showCancelButton:true,confirmButtonText:'Cetak',cancelButtonText:'Batal'});
+ if(!v)return;
+ const l=ps.filter(p=>v==='*'||p.kelas===v).sort((a,b)=>a.kelas.localeCompare(b.kelas,'id')||a.nama.localeCompare(b.nama,'id')),pages=[];
+ for(let i=0;i<l.length;i+=10)pages.push(l.slice(i,i+10));
+ cetak(pages.map(pg=>`<div class="pg"><div class="kgrid">${pg.map(p=>`<div class="kartu"><div class="kh"><img src="logo_sekolah.png" ${hid}><div><b>KARTU PEMILIH</b><br>PILKETOS MTs DARUL HIKMAH 2026/2027</div><img src="image.png" ${hid}></div>
+ <div class="kb"><div class="nm"><b>${esc(p.nama)}</b><br>NIS/NIP: ${esc(p.nis)}<br>Kelas: ${esc(p.kelas)}</div><div class="tk">TOKEN<b>${p.token}</b></div></div>
+ <div class="kf">Rahasiakan token Anda. Hanya berlaku untuk satu kali memilih.</div></div>`).join('')}</div></div>`).join(''))}
+
+function eksporHasil(){const wb=XLSX.utils.book_new(),ps=get(P,[]);
+ XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['No Urut','Ketua','Wakil','Suara'],...cands().map(c=>[c.noUrut,c.ketua,c.wakil,c.suara||0])]),'Hasil');
+ XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['NIS/NIP','Nama','Kelas','Token','Status'],...ps.map(p=>[p.nis,p.nama,p.kelas,p.token,p.status==='sudah'?'Sudah memilih':'Belum'])]),'Pemilih');
+ XLSX.writeFile(wb,'hasil_pilketos_'+JJ+'.xlsx')}
+
+/* ---------- CADANGAN ---------- */
+function backup(){const d={v:1,at:new Date().toISOString(),kandidat:cands(),pemilih:get(P,[])},a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:'application/json'}));a.download='cadangan_pilketos_'+JJ+'_'+Date.now()+'.json';a.click()}
+function restore(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();
+ r.onload=e=>{try{const d=JSON.parse(e.target.result);if(!Array.isArray(d.kandidat)||!Array.isArray(d.pemilih))throw 0;
+  Swal.fire({title:'Pulihkan data?',text:'Data saat ini akan ditimpa.',icon:'warning',showCancelButton:true,confirmButtonText:'Ya, Pulihkan',cancelButtonText:'Batal'})
+  .then(x=>{if(x.isConfirmed){put(K,d.kandidat.map(({suara,...c})=>c));put(P,d.pemilih.map(p=>({...p,id:nk(p.nis)})));ref('suara').set(Object.fromEntries(d.kandidat.map(c=>[c.id,c.suara||0])));toast('Data dipulihkan')}})}catch{Swal.fire('Gagal','File cadangan tidak valid.','error')}};
+ r.readAsText(f);ev.target.value=''}
+function resetSuara(){Swal.fire({title:'Reset semua suara?',text:'Ketik RESET untuk melanjutkan.',input:'text',icon:'warning',showCancelButton:true,confirmButtonColor:'#d33',confirmButtonText:'Reset',cancelButtonText:'Batal',
+ preConfirm:v=>v==='RESET'||Swal.showValidationMessage('Ketik RESET dengan huruf besar')})
+ .then(r=>{if(r.isConfirmed){const u={};get(K,[]).forEach(c=>u[BASE+'suara/'+c.id]=0);get(P,[]).forEach(p=>u[BASE+'pemilih/'+p.id+'/status']='belum');db.ref().update(u);toast('Suara direset')}})}
+</script>
+</body>
+</html>
