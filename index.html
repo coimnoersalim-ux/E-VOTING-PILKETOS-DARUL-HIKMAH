@@ -418,8 +418,8 @@ function importExcel(ev){const f=ev.target.files[0];if(!f)return;const r=new Fil
   const wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'}),rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});
   const ex=get(P,[]),nisSet=new Set(ex.map(p=>p.nis)),tk=new Set(ex.map(p=>p.token)),baru=[];let skip=0;
   rows.forEach(row=>{const k=Object.keys(row),f=s=>k.find(x=>x.toLowerCase().includes(s));
-   const nk=f('nis')||f('nip'),nm=f('nama'),kl=f('kelas');if(!nk||!nm||row[nk]==='')return;
-   const nis=String(row[nk]).trim();if(nisSet.has(nis)){skip++;return}nisSet.add(nis);
+   const kn=f('nis')||f('nip'),nm=f('nama'),kl=f('kelas');if(!kn||!nm||row[kn]==='')return;
+   const nis=String(row[kn]).trim();if(nisSet.has(nis)){skip++;return}nisSet.add(nis);
    const t=genToken(tk);tk.add(t);baru.push({id:nk(nis),nis,nama:String(row[nm]).trim(),kelas:kl?String(row[kl]).trim():'-',token:t,status:'belum'})});
   if(!baru.length)return Swal.fire('Gagal','Tidak ada data baru yang valid. Periksa judul kolom (NIS/NIP, Nama Lengkap, Kelas).','error');
   put(P,[...ex,...baru]);renderPemilih();Swal.fire('Berhasil',`${baru.length} pemilih diimpor${skip?`, ${skip} NIS ganda dilewati`:''}.`,'success')
