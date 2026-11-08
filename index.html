@@ -2,22 +2,78 @@
 <title>E-Voting Pilketos Darul Hikmah</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0}body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;color:#fff;overflow-x:hidden;
-background:radial-gradient(circle at 15% 20%,rgba(255,255,255,.18),transparent 40%),linear-gradient(135deg,#0a1a3f,#12306b 55%,#2a4a9a)}
-body::before,body::after{content:'';position:fixed;width:360px;height:360px;border-radius:50%;filter:blur(80px);opacity:.4;animation:fl 12s ease-in-out infinite;pointer-events:none}
-body::before{background:#fbbf24;top:-100px;left:-80px}body::after{background:#60a5fa;bottom:-120px;right:-80px;animation-delay:-6s}
-@keyframes fl{50%{transform:translate(40px,-30px)}}@keyframes up{from{opacity:0;transform:translateY(16px)}}
-.w{position:relative;z-index:1;max-width:860px;width:100%;text-align:center;animation:up .6s ease}
-.kpo{height:84px;margin-bottom:14px}h1{font-size:clamp(26px,5vw,40px);font-weight:800}p.s{opacity:.85;margin:8px 0 32px}
-.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
-a.c{display:block;text-decoration:none;color:#fff;padding:30px 24px;border-radius:30px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(20px);box-shadow:0 30px 70px -25px rgba(0,0,0,.5);transition:.25s}
-a.c:hover{transform:translateY(-8px);background:rgba(255,255,255,.2)}.lg{display:flex;justify-content:center;align-items:center;gap:14px;margin-bottom:16px}a.c img{height:88px;width:88px;object-fit:contain}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;min-height:100vh;color:#fff;overflow-x:hidden;display:flex;flex-direction:column;
+background:linear-gradient(120deg,#071433,#12306b,#0b3d36,#2b1a5e);background-size:300% 300%;animation:bg 18s ease infinite}
+@keyframes bg{50%{background-position:100% 50%}}@keyframes fl{50%{transform:translate(50px,-40px) scale(1.15)}}
+@keyframes up{from{opacity:0;transform:translateY(18px)}}@keyframes mq{to{transform:translateX(-50%)}}@keyframes mr{from{transform:translateX(-50%)}to{transform:none}}
+@keyframes bob{50%{transform:translateY(-8px)}}@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(245,158,11,.6)}100%{box-shadow:0 0 0 16px rgba(245,158,11,0)}}
+@keyframes shine{to{background-position:200% center}}@keyframes tick{0%{transform:translateY(-6px);opacity:.3}}
+.orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:.38;pointer-events:none;animation:fl 14s ease-in-out infinite}
+canvas{position:fixed;inset:0;pointer-events:none}
+.mq{position:relative;z-index:2;overflow:hidden;white-space:nowrap;background:rgba(0,0,0,.32);backdrop-filter:blur(8px);padding:9px 0;font-size:13px;font-weight:600}
+.mq div{display:inline-block;animation:mq 38s linear infinite}.mq.r div{animation:mr 46s linear infinite}.mq span{margin:0 28px}.mq b{color:#fbbf24}
+main{position:relative;z-index:1;flex:1;max-width:980px;width:100%;margin:0 auto;padding:36px 20px;text-align:center;animation:up .7s ease}
+.tag{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);padding:6px 16px;border-radius:99px;font-size:12px;font-weight:700;letter-spacing:.08em}
+h1{font-size:clamp(28px,6vw,52px);font-weight:800;margin:14px 0 6px;background:linear-gradient(90deg,#fff,#fbbf24,#fff,#67e8f9,#fff);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 6s linear infinite}
+.sub{opacity:.85}
+.cd{margin:30px auto 8px;max-width:560px}.cd h3{font-size:14px;letter-spacing:.12em;opacity:.9;margin-bottom:12px}
+.bx{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.bx div{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(16px);border-radius:20px;padding:16px 4px;box-shadow:0 20px 40px -20px rgba(0,0,0,.6)}
+.bx b{display:block;font-size:clamp(28px,7vw,46px);font-weight:800;font-variant-numeric:tabular-nums;animation:tick .4s}
+.bx small{font-size:11px;letter-spacing:.14em;opacity:.8}
+.live{display:none;background:#16a34a;border-radius:20px;padding:20px;font-weight:800;font-size:20px;animation:pulse 1.5s infinite}
+.hday{margin-top:12px;font-size:13px;opacity:.85}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:22px;margin-top:34px}
+a.c{display:block;text-decoration:none;color:#fff;padding:30px 22px 26px;border-radius:30px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(20px);box-shadow:0 30px 70px -25px rgba(0,0,0,.6);transition:transform .15s,background .25s;transform-style:preserve-3d;position:relative;overflow:hidden}
+a.c::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--x,50%) var(--y,0%),rgba(255,255,255,.28),transparent 55%);opacity:0;transition:opacity .3s}a.c:hover::before{opacity:1}
+.lg{display:flex;justify-content:center;gap:14px;margin-bottom:16px}.lg img{height:84px;width:84px;object-fit:contain;animation:bob 4s ease-in-out infinite}.lg img+img{animation-delay:-2s}
 a.c b{display:block;font-size:22px}a.c span{display:block;font-size:13px;opacity:.85;margin:4px 0 18px}
-a.c i{font-style:normal;display:inline-block;background:#f59e0b;color:#0f172a;font-weight:800;padding:11px 26px;border-radius:14px}
-footer{margin-top:28px;font-size:12px;opacity:.7}
-</style></head><body><div class="w">
-<h1>E-Voting Pilketos Darhik</h1><p class="s">Pilih jenjang Anda untuk masuk ke bilik suara · Periode 2026/2027</p>
+a.c i{font-style:normal;display:inline-block;background:#f59e0b;color:#0f172a;font-weight:800;padding:11px 28px;border-radius:14px;animation:pulse 2s infinite}
+a.ma{background:rgba(16,185,129,.16)}a.ma i{background:#34d399}
+footer{margin-top:30px;font-size:12px;opacity:.7}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style></head><body>
+<div class="orb" style="width:380px;height:380px;background:#fbbf24;top:-120px;left:-100px"></div>
+<div class="orb" style="width:420px;height:420px;background:#10b981;bottom:-140px;right:-100px;animation-delay:-7s"></div>
+<canvas id="cv"></canvas>
+<div class="mq"><div id="t1"></div></div>
+<main>
+<span class="tag">PILKETOS 2026/2027</span>
+<h1>E-Voting Pilketos Darhik</h1>
+<p class="sub">Pilih jenjang Anda untuk masuk ke bilik suara</p>
+<section class="cd"><h3 id="cdT">PEMILIHAN DIMULAI DALAM</h3>
+<div class="bx" id="bx"><div><b id="d">00</b><small>HARI</small></div><div><b id="h">00</b><small>JAM</small></div><div><b id="m">00</b><small>MENIT</small></div><div><b id="s">00</b><small>DETIK</small></div></div>
+<div class="live" id="live"></div>
+<p class="hday">📅 Kamis, 19 November 2026 · 07.00 WIB</p></section>
 <div class="g">
-<a class="c" href="mts.html"><div class="lg"><img src="logo_sekolah.png" alt="Logo MTs" onerror="this.style.display='none'"><img src="image.png" alt="Logo KPO MTs" onerror="this.style.display='none'"></div><b>MTs Darul Hikmah</b><span>Madrasah Tsanawiyah</span><i>Masuk MTs</i></a>
-<a class="c" href="ma.html"><div class="lg"><img src="logo_ma.png" alt="Logo MA" onerror="this.style.display='none'"><img src="logo_kpo_ma.png" alt="Logo KPO MA" onerror="this.style.display='none'"></div><b>MA Darul Hikmah</b><span>Madrasah Aliyah</span><i>Masuk MA</i></a>
-</div><footer>Komisi Pemilihan OSIS (KPO) · Desa Gunungsari, Cikatomas, Tasikmalaya</footer></div></body></html>
+<a class="c" href="mts.html"><div class="lg"><img src="logo_sekolah.png" alt="Logo MTs" onerror="this.style.display='none'"><img src="image.png" alt="Logo KPO MTs" onerror="this.style.display='none'"></div><b>MTs Darul Hikmah</b><span>Madrasah Tsanawiyah</span><i>Masuk MTs →</i></a>
+<a class="c ma" href="ma.html"><div class="lg"><img src="logo_ma.png" alt="Logo MA" onerror="this.style.display='none'"><img src="logo_kpo_ma.png" alt="Logo KPO MA" onerror="this.style.display='none'"></div><b>MA Darul Hikmah</b><span>Madrasah Aliyah</span><i>Masuk MA →</i></a>
+</div>
+<footer>Komisi Pemilihan OSIS (KPO) · Desa Gunungsari, Cikatomas, Tasikmalaya</footer>
+</main>
+<div class="mq r"><div id="t2"></div></div>
+<script>
+/* Atur jadwal di sini (format WIB, UTC+7) */
+const MULAI=new Date('2026-11-19T07:00:00+07:00'),SELESAI=new Date('2026-11-19T15:00:00+07:00');
+const A=['📢 <b>PILKETOS DARHIK 2026/2027</b> resmi digelar','🗓️ Hari pemilihan: <b>Kamis, 19 November 2026</b>','🗳️ Satu suara darimu, <b>menentukan arah OSIS</b> setahun ke depan','🌟 Pilih pemimpin yang <b>jujur, amanah, dan berprestasi</b>','🔐 Siapkan <b>NIS</b> dan <b>token</b> pribadimu, jangan dibagikan ke siapa pun','🤝 Berbeda pilihan itu biasa, tetap <b>kompak dan saling menghargai</b>','💡 Kenali visi dan misi para calon sebelum memilih','📍 Pemilihan <b>LUBER JURDIL</b>: Langsung, Umum, Bebas, Rahasia, Jujur, Adil'];
+const B=['✨ Selamat datang di <b>E-Voting MTs &amp; MA Darul Hikmah</b>','⚡ Hasil dihitung otomatis dan tampil <b>realtime</b>','🚫 Dilarang mewakilkan atau memilih lebih dari satu kali','🙌 Pemimpin hebat lahir dari <b>pemilih yang cerdas</b>','🕋 Pilih dengan hati nurani, <b>bukan karena paksaan atau ajakan</b>','🏫 Satu madrasah, satu semangat: <b>Darul Hikmah Maju Bersama</b>','😊 Kalau bingung, tanyakan ke <b>panitia KPO</b>, kami siap membantu','🎉 Terima kasih sudah ikut menyukseskan pesta demokrasi madrasah'];
+const fill=(id,a)=>{const h=a.map(x=>'<span>'+x+'</span><span>✦</span>').join('');$(id).innerHTML=h+h};const $=i=>document.getElementById(i);
+fill('t1',A);fill('t2',B);
+const pad=n=>String(n).padStart(2,'0');
+function tick(){const now=new Date(),df=MULAI-now;
+ if(df>0){const x=Math.floor(df/1000);const v={d:Math.floor(x/86400),h:Math.floor(x%86400/3600),m:Math.floor(x%3600/60),s:x%60};
+  for(const k in v){const e=$(k),n=pad(v[k]);if(e.textContent!==n){e.textContent=n;e.style.animation='none';e.offsetWidth;e.style.animation=''}}}
+ else{$('bx').style.display='none';$('live').style.display='block';
+  $('cdT').textContent=now<SELESAI?'PEMILIHAN HARI INI':'PEMILIHAN';
+  $('live').textContent=now<SELESAI?'🔴 Pemilihan sedang berlangsung. Ayo gunakan hak suaramu!':'✅ Pemilihan telah selesai. Terima kasih atas partisipasi Anda!';
+  if(now>=SELESAI)$('live').style.background='#2563eb'}}
+tick();setInterval(tick,1000);
+/* efek kartu miring mengikuti kursor */
+document.querySelectorAll('a.c').forEach(c=>{c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;c.style.transform=`perspective(800px) rotateY(${(x-.5)*10}deg) rotateX(${(.5-y)*10}deg) translateY(-6px)`;c.style.setProperty('--x',x*100+'%');c.style.setProperty('--y',y*100+'%')});c.addEventListener('mouseleave',()=>c.style.transform='')});
+/* partikel melayang */
+const cv=$('cv'),cx=cv.getContext('2d');let W,H,P=[];
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight}rs();addEventListener('resize',rs);
+for(let i=0;i<46;i++)P.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2.4+.6,v:Math.random()*.5+.15,a:Math.random()*6});
+(function f(){cx.clearRect(0,0,W,H);P.forEach(p=>{p.y-=p.v;p.a+=.02;p.x+=Math.sin(p.a)*.4;if(p.y<-5){p.y=H+5;p.x=Math.random()*W}cx.beginPath();cx.arc(p.x,p.y,p.r,0,7);cx.fillStyle='rgba(255,255,255,'+(.25+Math.sin(p.a)*.2)+')';cx.fill()});requestAnimationFrame(f)})();
+</script></body></html>
