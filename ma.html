@@ -11,10 +11,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:#f8fafc}
-:root{--bd:#0a1a3f;--b1:#12306b;--b2:#2a4a9a}
+:root{--bd:#064e3b;--b1:#047857;--b2:#10b981}
 .bg-resmi{background:radial-gradient(circle at 15% 20%,rgba(255,255,255,.18),transparent 40%),linear-gradient(135deg,var(--bd) 0%,var(--b1) 55%,var(--b2) 100%)}
 .bg-brand{background:var(--b1)}.bg-brand-d{background:var(--bd)}.hover\:bg-brand-d:hover{background:var(--bd)}.text-brand{color:var(--b1)}.bd-brand{border-color:var(--bd)}.bl-brand{border-color:rgba(255,255,255,.3)}
 .gold-border{padding:4px;background:linear-gradient(135deg,#fbbf24,#d97706 50%,#fef3c7);border-radius:1rem}
@@ -80,6 +80,18 @@ main .rounded-xl{border-radius:18px!important}
 #tbPemilih tr:hover{background:#f8fafc}
 .swal2-popup{border-radius:26px!important;font-family:inherit!important}
 .swal2-styled.swal2-confirm{border-radius:14px!important}
+
+/* ===== CIRI KHAS PER JENJANG ===== */
+body[data-jj=ma]{font-family:'Sora',system-ui,sans-serif!important}
+body[data-jj=ma] aside{border-radius:0!important}
+body[data-jj=ma] main .rounded-2xl{border-radius:12px!important;border-left:6px solid var(--b2)!important}
+body[data-jj=ma] #stats>div{border-radius:12px!important}
+body[data-jj=ma] #loginScreen>div{border-radius:16px;border-top:4px solid #fbbf24}
+body[data-jj=ma] #bilik>div{border-radius:16px!important;border-bottom:6px solid var(--b2)!important}
+body[data-jj=ma] #kandidatGrid>div{border-radius:14px!important}
+body[data-jj=ma] #voterDashboard header{background:linear-gradient(100deg,var(--bd),var(--b1))!important;border-bottom:4px solid #fbbf24}
+body[data-jj=mts] #loginScreen>div{border-radius:36px}
+body[data-jj=mts] #bilik>div{border-radius:36px!important}
 </style>
 </head>
 <body class="text-slate-800">
@@ -292,11 +304,12 @@ let chart=null,idle=null,curTab='quickCount';
 const TABS=[['quickCount','bar-chart-2','Quick Count'],['kandidat','users','Data Paslon'],['pemilih','user-check','Data Pemilih'],['cetak','printer','Cetak Laporan'],['pengaturan','settings','Pengaturan']];
 
 const THEMES={dongker:['#0a1a3f','#12306b','#2a4a9a','Biru Dongker'],ungu:['#6d28d9','#7c3aed','#a78bfa','Ungu'],oranye:['#c2410c','#ea580c','#fb923c','Oranye'],marun:['#9f1239','#be123c','#fb7185','Marun'],biru:['#1d4ed8','#2563eb','#60a5fa','Biru'],hijau:['#047857','#059669','#34d399','Hijau'],teal:['#0f766e','#0d9488','#2dd4bf','Teal'],ungu:['#6d28d9','#7c3aed','#a78bfa','Ungu'],marun:['#9f1239','#be123c','#fb7185','Marun']};
-function applyTheme(n,save){const t=THEMES[n]||THEMES.dongker,r=document.documentElement.style;r.setProperty('--bd',t[0]);r.setProperty('--b1',t[1]);r.setProperty('--b2',t[2]);if(save){const c=cfg();c.theme=n;put(C,c)}}
+function applyTheme(n,save){const t=THEMES[n]||THEMES.hijau,r=document.documentElement.style;r.setProperty('--bd',t[0]);r.setProperty('--b1',t[1]);r.setProperty('--b2',t[2]);if(save){const c=cfg();c.theme=n;put(C,c)}}
 function genToken(used){const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let t;
  do{t=[...crypto.getRandomValues(new Uint8Array(6))].map(b=>a[b%a.length]).join('')}while(used&&used.has(t));return t}
 
 document.addEventListener('DOMContentLoaded',()=>{
+ document.body.dataset.jj=JJ;
  if(sessionStorage.getItem('jj')!==JJ){sessionStorage.clear();sessionStorage.setItem('jj',JJ)}
  if(!FB_OK)$('setup').classList.remove('hidden');else{firebase.initializeApp(FIREBASE_CONFIG);db=firebase.database();startSync()}
  applyTheme(cfg().theme);
