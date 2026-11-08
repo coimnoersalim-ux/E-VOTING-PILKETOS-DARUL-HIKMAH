@@ -92,6 +92,18 @@ body[data-jj=ma] #kandidatGrid>div{border-radius:14px!important}
 body[data-jj=ma] #voterDashboard header{background:linear-gradient(100deg,var(--bd),var(--b1))!important;border-bottom:4px solid #fbbf24}
 body[data-jj=mts] #loginScreen>div{border-radius:36px}
 body[data-jj=mts] #bilik>div{border-radius:36px!important}
+
+/* ===== LOGIN HIDUP ===== */
+@keyframes lbg{50%{background-position:100% 50%}}@keyframes lbob{50%{transform:translateY(-7px)}}@keyframes lpu{0%{box-shadow:0 0 0 0 rgba(245,158,11,.6)}100%{box-shadow:0 0 0 14px rgba(245,158,11,0)}}
+@keyframes lsh{to{background-position:200% center}}@keyframes lmq{to{transform:translateX(-50%)}}@keyframes lmr{from{transform:translateX(-50%)}to{transform:none}}
+#loginScreen{background:linear-gradient(120deg,var(--bd),var(--b1),var(--b2),var(--bd))!important;background-size:300% 300%!important;animation:lbg 18s ease infinite}
+#lcv{position:fixed;inset:0;pointer-events:none}
+#loginScreen img{animation:lbob 4s ease-in-out infinite}#loginScreen img+img{animation-delay:-2s}
+#loginScreen h1{background:linear-gradient(90deg,#fff,#fbbf24,#fff,#67e8f9,#fff);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:lsh 6s linear infinite}
+#loginScreen form button{animation:lpu 2s infinite}
+.lmq{position:fixed;left:0;right:0;z-index:3;overflow:hidden;white-space:nowrap;background:rgba(0,0,0,.35);backdrop-filter:blur(8px);color:#fff;padding:9px 0;font-size:13px;font-weight:600}
+.lmq.t{top:0}.lmq.b{bottom:0}.lmq div{display:inline-block;animation:lmq 40s linear infinite}.lmq.b div{animation:lmr 48s linear infinite}.lmq span{margin:0 26px}.lmq b{color:#fbbf24}
+@media(prefers-reduced-motion:reduce){#loginScreen,#loginScreen *{animation:none!important}}
 </style>
 </head>
 <body class="text-slate-800">
@@ -101,7 +113,7 @@ body[data-jj=mts] #bilik>div{border-radius:36px!important}
 <ol class="list-decimal pl-5 space-y-2 text-sm text-slate-600"><li>Buka <b>console.firebase.google.com</b> → buat project.</li><li><b>Build → Realtime Database → Create Database</b> (lokasi Singapore, mode test).</li><li>Tab <b>Rules</b> → isi <code class="bg-slate-100 px-1 rounded">{"rules":{".read":true,".write":true}}</code> → Publish.</li><li><b>Project settings → Your apps → Web (&lt;/&gt;)</b> → salin <code>firebaseConfig</code> (termasuk databaseURL) ke file ini.</li></ol></div></div>
 <!-- LOGIN -->
 <div id="loginScreen" class="min-h-screen w-full flex items-center justify-center bg-resmi fixed inset-0 z-50 overflow-y-auto">
- <div class="w-full max-w-md p-8 m-4 bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20">
+ <canvas id="lcv"></canvas> <div class="w-full max-w-md p-8 m-4 bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20">
   <div class="flex justify-center items-center gap-4 mb-6">
    <img src="logo_ma.png" alt="Logo MA" class="h-24 w-24 object-contain" onerror="this.style.display='none'">
    <img src="logo_kpo_ma.png" alt="Logo KPO" class="h-24 w-24 object-contain" onerror="this.style.display='none'">
@@ -487,7 +499,7 @@ function hasil(){const cs=cands(),mx=Math.max(0,...cs.map(c=>c.suara||0));return
 /* ---------- CETAK & EKSPOR ---------- */
 const tgl=()=>new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
 const hid="onerror=\"this.style.visibility='hidden'\"";
-function kop(){return`<div class="kop"><img src="logo_ma.png" ${hid}><div class="t"><div style="font-size:13pt;font-weight:bold">KOMISI PEMILIHAN OSIS (KPO)</div><div style="font-size:16pt;font-weight:bold">MADRASAH ALIYAH DARUL HIKMAH</div><div style="font-size:10pt">Desa Gunungsari, Kecamatan Cikatomas, Kabupaten Tasikmalaya</div><div style="font-size:10pt;font-weight:bold">Periode 2026/2027</div></div><img src="logo_kpo_ma.png" ${hid}></div>`}
+function kop(){return`<div class="kop"><img src="logo_ma.png" ${hid}><div class="t"><div style="font-size:10pt;font-weight:bold">KOMISI PEMILIHAN OSIS (KPO)</div><div style="font-size:15pt;font-weight:bold">MADRASAH ALIYAH DARUL HIKMAH</div><div style="font-size:11pt;font-weight:bold">TERAKREDITASI “A”</div><div style="font-size:9.5pt">NSM: 131232060094 &nbsp;&nbsp; NPSN: 70037854</div><div style="font-size:9.5pt">Alamat: Kp. Mekarrahayu RT 003/RW 008, Desa Gunungsari<br>Kecamatan Cikatomas, Kabupaten Tasikmalaya</div><div style="font-size:9.5pt">Kode POS 46193, email: darulhikmahmts6@gmail.com</div></div><img src="logo_kpo_ma.png" ${hid}></div>`}
 function cetak(h){const pc=$('printContainer');pc.innerHTML=h;
  Promise.all([...pc.querySelectorAll('img')].map(i=>i.complete?0:new Promise(r=>{i.onload=i.onerror=r}))).then(()=>setTimeout(()=>window.print(),150))}
 const ttd=()=>`<div style="margin-left:55%;text-align:center;margin-top:16px;page-break-inside:avoid"><p>Gunungsari, ${tgl()}<br>Ketua KPO MA Darul Hikmah,</p><p style="margin-top:60px"><b><u>( ........................................ )</u></b></p></div>`;
@@ -503,14 +515,13 @@ function cetakBA(){const {cs,top}=hasil(),ps=get(P,[]),tot=ps.length,sdh=ps.filt
  <p style="text-align:justify">${kesimpulan}</p>${ttd()}</div>`)}
 
 function cetakHadir(){const ps=get(P,[]).sort((a,b)=>a.kelas.localeCompare(b.kelas,'id')||a.nama.localeCompare(b.nama,'id')),n=28,pages=[];
- for(let i=0;i<ps.length;i+=n)pages.push(ps.slice(i,i+n));if(!pages.length)pages.push([]);
- const tot=pages.length+(pages[pages.length-1].length>18?1:0);
+ for(let i=0;i<ps.length;){const r=ps.length-i,z=r<=18?r:r<=n?r-4:n;pages.push(ps.slice(i,i+z));i+=z}if(!pages.length)pages.push([]);
+ const tot=pages.length;
  const foot=(i)=>`<div class="pgno">Halaman ${i} dari ${tot}</div>`;
  let h=pages.map((pg,pi)=>`<div class="doc pg">${kop()}<h3>DAFTAR HADIR PEMILIH</h3>
  <table class="tb hadir"><thead><tr><th style="width:12mm">No</th><th style="width:34mm">NIS / NIP</th><th>Nama Lengkap</th><th style="width:24mm">Kelas</th><th style="width:48mm">Tanda Tangan</th></tr></thead><tbody>
  ${pg.map((p,i)=>{const g=pi*n+i+1;return`<tr><td class="c">${g}</td><td class="c">${esc(p.nis)}</td><td>${esc(p.nama)}</td><td class="c">${esc(p.kelas)}</td><td style="text-align:${g%2?'left':'right'};color:#666">${g}. ..........</td></tr>`}).join('')}</tbody></table>
- ${pi===pages.length-1&&pg.length<=18?`<p style="margin-top:8px;font-size:10pt">Jumlah pemilih terdaftar: <b>${ps.length}</b> orang</p>${ttd()}`:''}${foot(pi+1)}</div>`).join('');
- if(pages[pages.length-1].length>18)h+=`<div class="doc pg">${kop()}<p style="font-size:10pt">Jumlah pemilih terdaftar: <b>${ps.length}</b> orang</p>${ttd()}${foot(tot)}</div>`;
+ ${pi===pages.length-1?`<p style="margin-top:8px;font-size:10pt">Jumlah pemilih terdaftar: <b>${ps.length}</b> orang</p>${ttd()}`:''}${foot(pi+1)}</div>`).join('');
  cetak(h)}
 
 async function cetakKartu(){const ps=get(P,[]);if(!ps.length)return Swal.fire('Belum ada pemilih','Import data pemilih terlebih dahulu.','info');
@@ -539,6 +550,12 @@ function restore(ev){const f=ev.target.files[0];if(!f)return;const r=new FileRea
 function resetSuara(){Swal.fire({title:'Reset semua suara?',text:'Ketik RESET untuk melanjutkan.',input:'text',icon:'warning',showCancelButton:true,confirmButtonColor:'#d33',confirmButtonText:'Reset',cancelButtonText:'Batal',
  preConfirm:v=>v==='RESET'||Swal.showValidationMessage('Ketik RESET dengan huruf besar')})
  .then(r=>{if(r.isConfirmed){const u={};get(K,[]).forEach(c=>u[BASE+'suara/'+c.id]=0);get(P,[]).forEach(p=>u[BASE+'pemilih/'+p.id+'/status']='belum');db.ref().update(u);toast('Suara direset')}})}
+</script>
+<script>
+(function(){const g=i=>document.getElementById(i),cv=g('lcv'),cx=cv.getContext('2d');let W,H,P=[];const rs=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};rs();addEventListener('resize',rs);
+for(let i=0;i<40;i++)P.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2.2+.6,v:Math.random()*.5+.15,a:Math.random()*6});
+(function f(){cx.clearRect(0,0,W,H);if(!g('loginScreen').classList.contains('hidden'))P.forEach(p=>{p.y-=p.v;p.a+=.02;p.x+=Math.sin(p.a)*.4;if(p.y<-5){p.y=H+5;p.x=Math.random()*W}cx.beginPath();cx.arc(p.x,p.y,p.r,0,7);cx.fillStyle='rgba(255,255,255,'+(.25+Math.sin(p.a)*.2)+')';cx.fill()});requestAnimationFrame(f)})();
+})();
 </script>
 </body>
 </html>
