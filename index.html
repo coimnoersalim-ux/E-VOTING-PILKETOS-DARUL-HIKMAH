@@ -51,7 +51,7 @@ footer{margin-top:30px;font-size:12px;opacity:.7}
 <section class="cd"><h3 id="cdT">PEMILIHAN DIMULAI DALAM</h3>
 <div class="bx" id="bx"><div><b id="d">00</b><small>HARI</small></div><div><b id="h">00</b><small>JAM</small></div><div><b id="m">00</b><small>MENIT</small></div><div><b id="s">00</b><small>DETIK</small></div></div>
 <div class="live" id="live"></div>
-<p class="hday">📅 Kamis, 19 November 2026 · 07.00 WIB</p></section>
+<p class="hday">📅 Sabtu, 21 November 2026 · 07.30 WIB</p></section>
 <div class="g">
 <a class="c" href="mts.html"><div class="lg"><img src="logo_sekolah.png" alt="Logo MTs" onerror="this.style.display='none'"><img src="image.png" alt="Logo KPO MTs" onerror="this.style.display='none'"></div><b>MTs Darul Hikmah</b><span>Madrasah Tsanawiyah</span><i>Masuk MTs →</i></a>
 <a class="c ma" href="ma.html"><div class="lg"><img src="logo_ma.png" alt="Logo MA" onerror="this.style.display='none'"><img src="logo_kpo_ma.png" alt="Logo KPO MA" onerror="this.style.display='none'"></div><b>MA Darul Hikmah</b><span>Madrasah Aliyah</span><i>Masuk MA →</i></a>
@@ -62,8 +62,8 @@ footer{margin-top:30px;font-size:12px;opacity:.7}
 
 <script>
 /* Atur jadwal di sini (format WIB, UTC+7) */
-const MULAI=new Date('2026-11-19T07:00:00+07:00'),SELESAI=new Date('2026-11-19T15:00:00+07:00');
-const A=['📢 <b>PILKETOS DARHIK 2026/2027</b> resmi digelar','🗓️ Hari pemilihan: <b>Kamis, 19 November 2026</b>','🗳️ Satu suara darimu, <b>menentukan arah OSIS</b> setahun ke depan','🌟 Pilih pemimpin yang <b>jujur, amanah, dan berprestasi</b>','🔐 Siapkan <b>NIS</b> dan <b>token</b> pribadimu, jangan dibagikan ke siapa pun','🤝 Berbeda pilihan itu biasa, tetap <b>kompak dan saling menghargai</b>','💡 Kenali visi dan misi para calon sebelum memilih','📍 Pemilihan <b>LUBER JURDIL</b>: Langsung, Umum, Bebas, Rahasia, Jujur, Adil'];
+const MULAI=new Date('2026-11-21T07:00:00+07:30'),SELESAI=new Date('2026-11-19T15:00:00+07:00');
+const A=['📢 <b>PILKETOS DARHIK 2026/2027</b> resmi digelar','🗓️ Hari pemilihan: <b>Sabtu, 21 November 2026</b>','🗳️ Satu suara darimu, <b>menentukan arah OSIS</b> setahun ke depan','🌟 Pilih pemimpin yang <b>jujur, amanah, dan berprestasi</b>','🔐 Siapkan <b>NIS</b> dan <b>token</b> pribadimu, jangan dibagikan ke siapa pun','🤝 Berbeda pilihan itu biasa, tetap <b>kompak dan saling menghargai</b>','💡 Kenali visi dan misi para calon sebelum memilih','📍 Pemilihan <b>LUBER JURDIL</b>: Langsung, Umum, Bebas, Rahasia, Jujur, Adil'];
 const B=['✨ Selamat datang di <b>E-Voting MTs &amp; MA Darul Hikmah</b>','⚡ Hasil dihitung otomatis dan tampil <b>realtime</b>','🚫 Dilarang mewakilkan atau memilih lebih dari satu kali','🙌 Pemimpin hebat lahir dari <b>pemilih yang cerdas</b>','🕋 Pilih dengan hati nurani, <b>bukan karena paksaan atau ajakan</b>','🏫 Satu madrasah, satu semangat: <b>Darul Hikmah Maju Bersama</b>','😊 Kalau bingung, tanyakan ke <b>panitia KPO</b>, kami siap membantu','🎉 Terima kasih sudah ikut menyukseskan pesta demokrasi madrasah'];
 const fill=(id,a)=>{const h=a.map(x=>'<span>'+x+'</span><span>✦</span>').join('');$(id).innerHTML=h+h};const $=i=>document.getElementById(i);
 fill('t1',A);fill('t2',B);
