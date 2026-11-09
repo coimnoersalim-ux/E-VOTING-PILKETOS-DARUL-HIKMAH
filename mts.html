@@ -104,6 +104,10 @@ body[data-jj=mts] #bilik>div{border-radius:36px!important}
 .lmq{position:fixed;left:0;right:0;z-index:3;overflow:hidden;white-space:nowrap;background:rgba(0,0,0,.35);backdrop-filter:blur(8px);color:#fff;padding:9px 0;font-size:13px;font-weight:600}
 .lmq.t{top:0}.lmq.b{bottom:0}.lmq div{display:inline-block;animation:lmq 40s linear infinite}.lmq.b div{animation:lmr 48s linear infinite}.lmq span{margin:0 26px}.lmq b{color:#fbbf24}
 @media(prefers-reduced-motion:reduce){#loginScreen,#loginScreen *{animation:none!important}}
+
+.mp{position:fixed;right:16px;bottom:16px;z-index:60;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(14px);color:#fff;border-radius:99px;padding:5px 6px 5px 6px;font:600 12px 'Plus Jakarta Sans',system-ui,sans-serif;box-shadow:0 10px 30px -10px rgba(0,0,0,.5)}
+.mp.land{bottom:64px}.mp button{width:36px;height:36px;border-radius:50%;border:0;background:#f59e0b;color:#0f172a;font-size:15px;cursor:pointer}.mp button#mpn{background:rgba(255,255,255,.25);color:#fff;width:30px;height:30px;font-size:12px}.mp span{padding:0 6px}
+@media(max-width:480px){.mp span{display:none}}
 </style>
 </head>
 <body class="text-slate-800">
@@ -113,7 +117,7 @@ body[data-jj=mts] #bilik>div{border-radius:36px!important}
 <ol class="list-decimal pl-5 space-y-2 text-sm text-slate-600"><li>Buka <b>console.firebase.google.com</b> → buat project.</li><li><b>Build → Realtime Database → Create Database</b> (lokasi Singapore, mode test).</li><li>Tab <b>Rules</b> → isi <code class="bg-slate-100 px-1 rounded">{"rules":{".read":true,".write":true}}</code> → Publish.</li><li><b>Project settings → Your apps → Web (&lt;/&gt;)</b> → salin <code>firebaseConfig</code> (termasuk databaseURL) ke file ini.</li></ol></div></div>
 <!-- LOGIN -->
 <div id="loginScreen" class="min-h-screen w-full flex items-center justify-center bg-resmi fixed inset-0 z-50 overflow-y-auto">
- <canvas id="lcv"></canvas> <div class="w-full max-w-md p-8 m-4 bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20">
+ <canvas id="lcv"></canvas><div class="mp" id="mp"><button id="mpb" aria-label="Putar jingle">▶</button><span id="mpt">Jingle Pilketos</span><button id="mpn" aria-label="Jingle berikutnya">⏭</button></div> <div class="w-full max-w-md p-8 m-4 bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20">
   <div class="flex justify-center items-center gap-4 mb-6">
    <img src="logo_sekolah.png" alt="Logo MTs" class="h-24 w-24 object-contain" onerror="this.style.display='none'">
    <img src="image.png" alt="Logo KPO" class="h-24 w-24 object-contain" onerror="this.style.display='none'">
@@ -407,7 +411,9 @@ async function kirim(id){
  if(!r.committed||!r.snapshot.val()){sessionStorage.clear();return Swal.fire('Hak suara sudah digunakan','','warning').then(()=>location.reload())}
  await ref('suara/'+id).transaction(n=>(n||0)+1);
  sessionStorage.clear();
- Swal.fire({icon:'success',title:'Terima Kasih!',text:'Suara Anda berhasil direkam.',showConfirmButton:false,timer:2000}).then(()=>location.reload())}
+ const au=new Audio(['jingle1.mp3','jingle2.mp3'][Math.floor(Math.random()*2)]);au.play().catch(()=>{});
+ const fo=setTimeout(()=>{const f=setInterval(()=>{au.volume=Math.max(0,au.volume-.1);if(au.volume<=.05){clearInterval(f);au.pause()}},120)},9000);
+ Swal.fire({icon:'success',title:'Terima Kasih!',text:'Suara Anda berhasil direkam.',timer:10500,timerProgressBar:true,confirmButtonText:'Selesai'}).then(()=>{clearTimeout(fo);au.pause();location.reload()})}
 
 /* ---------- PASLON ---------- */
 function modalKandidat(id){$('fk').reset();$('kFoto').value='';$('kId').value='';
@@ -557,6 +563,15 @@ function resetSuara(){Swal.fire({title:'Reset semua suara?',text:'Ketik RESET un
 for(let i=0;i<40;i++)P.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2.2+.6,v:Math.random()*.5+.15,a:Math.random()*6});
 (function f(){cx.clearRect(0,0,W,H);if(!g('loginScreen').classList.contains('hidden'))P.forEach(p=>{p.y-=p.v;p.a+=.02;p.x+=Math.sin(p.a)*.4;if(p.y<-5){p.y=H+5;p.x=Math.random()*W}cx.beginPath();cx.arc(p.x,p.y,p.r,0,7);cx.fillStyle='rgba(255,255,255,'+(.25+Math.sin(p.a)*.2)+')';cx.fill()});requestAnimationFrame(f)})();
 })();
+</script>
+<script>
+(function(auto,watch){const g=i=>document.getElementById(i),a=new Audio(),L=['jingle1.mp3','jingle2.mp3'],b=g('mpb'),n=g('mpn'),t=g('mpt');let i=0,on=false;a.src=L[0];a.preload='none';
+const ui=()=>{b.textContent=on?'⏸':'▶';t.textContent='Jingle Pilketos '+(i+1)+'/2'};
+const play=()=>a.play().then(()=>{on=true;ui()}).catch(()=>{on=false;ui()});
+const nx=()=>{i=(i+1)%2;a.src=L[i];play()};
+b.onclick=()=>on?(a.pause(),on=false,ui()):play();n.onclick=nx;a.onended=nx;ui();
+if(auto){const f=e=>{if(e.target.closest&&e.target.closest('#mp'))return;removeEventListener('pointerdown',f);if(!on)play()};addEventListener('pointerdown',f)}
+if(watch)setInterval(()=>{if(g('loginScreen').classList.contains('hidden')&&on){a.pause();on=false;ui()}},1000)})(false,true);
 </script>
 </body>
 </html>
