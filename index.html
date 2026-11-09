@@ -33,26 +33,33 @@ a.c i{font-style:normal;display:inline-block;background:#f59e0b;color:#0f172a;fo
 a.ma{background:rgba(16,185,129,.16)}a.ma i{background:#34d399}
 footer{margin-top:30px;font-size:12px;opacity:.7}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+
+.mp{position:fixed;right:16px;bottom:16px;z-index:60;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(14px);color:#fff;border-radius:99px;padding:5px 6px 5px 6px;font:600 12px 'Plus Jakarta Sans',system-ui,sans-serif;box-shadow:0 10px 30px -10px rgba(0,0,0,.5)}
+.mp.land{bottom:64px}.mp button{width:36px;height:36px;border-radius:50%;border:0;background:#f59e0b;color:#0f172a;font-size:15px;cursor:pointer}.mp button#mpn{background:rgba(255,255,255,.25);color:#fff;width:30px;height:30px;font-size:12px}.mp span{padding:0 6px}
+@media(max-width:480px){.mp span{display:none}}
+.mp.inl{position:static;margin:0 auto 18px;width:fit-content}.mp.inl span{display:inline!important}
 </style></head><body>
 <div class="orb" style="width:380px;height:380px;background:#fbbf24;top:-120px;left:-100px"></div>
 <div class="orb" style="width:420px;height:420px;background:#10b981;bottom:-140px;right:-100px;animation-delay:-7s"></div>
 <canvas id="cv"></canvas>
 <div class="mq"><div id="t1"></div></div>
 <main>
+<div class="mp inl" id="mp"><button id="mpb" aria-label="Putar jingle">▶</button><span id="mpt">Jingle Pilketos</span><button id="mpn" aria-label="Jingle berikutnya">⏭</button></div>
 <span class="tag">PILKETOS 2026/2027</span>
 <h1>E-Voting Pilketos Darhik</h1>
 <p class="sub">Pilih jenjang Anda untuk masuk ke bilik suara</p>
 <section class="cd"><h3 id="cdT">PEMILIHAN DIMULAI DALAM</h3>
 <div class="bx" id="bx"><div><b id="d">00</b><small>HARI</small></div><div><b id="h">00</b><small>JAM</small></div><div><b id="m">00</b><small>MENIT</small></div><div><b id="s">00</b><small>DETIK</small></div></div>
 <div class="live" id="live"></div>
-<p class="hday">📅 Sabtu, 21 November 2026 · 07.30 WIB</p></section>
+<p class="hday">📅 Kamis, 19 November 2026 · 07.00 WIB</p></section>
 <div class="g">
 <a class="c" href="mts.html"><div class="lg"><img src="logo_sekolah.png" alt="Logo MTs" onerror="this.style.display='none'"><img src="image.png" alt="Logo KPO MTs" onerror="this.style.display='none'"></div><b>MTs Darul Hikmah</b><span>Madrasah Tsanawiyah</span><i>Masuk MTs →</i></a>
 <a class="c ma" href="ma.html"><div class="lg"><img src="logo_ma.png" alt="Logo MA" onerror="this.style.display='none'"><img src="logo_kpo_ma.png" alt="Logo KPO MA" onerror="this.style.display='none'"></div><b>MA Darul Hikmah</b><span>Madrasah Aliyah</span><i>Masuk MA →</i></a>
 </div>
-<footer>Komisi Pemilihan OSIS (KPO) · MTs & MA Darul Hikmah Desa Gunungsari Cikatomas, Tasikmalaya</footer>
+<footer>Komisi Pemilihan OSIS (KPO) · Desa Gunungsari, Cikatomas, Tasikmalaya</footer>
 </main>
 <div class="mq r"><div id="t2"></div></div>
+
 <script>
 /* Atur jadwal di sini (format WIB, UTC+7) */
 const MULAI=new Date('2026-11-19T07:00:00+07:00'),SELESAI=new Date('2026-11-19T15:00:00+07:00');
@@ -76,4 +83,13 @@ const cv=$('cv'),cx=cv.getContext('2d');let W,H,P=[];
 function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight}rs();addEventListener('resize',rs);
 for(let i=0;i<46;i++)P.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2.4+.6,v:Math.random()*.5+.15,a:Math.random()*6});
 (function f(){cx.clearRect(0,0,W,H);P.forEach(p=>{p.y-=p.v;p.a+=.02;p.x+=Math.sin(p.a)*.4;if(p.y<-5){p.y=H+5;p.x=Math.random()*W}cx.beginPath();cx.arc(p.x,p.y,p.r,0,7);cx.fillStyle='rgba(255,255,255,'+(.25+Math.sin(p.a)*.2)+')';cx.fill()});requestAnimationFrame(f)})();
-</script></body></html>
+</script><script>
+(function(auto,watch){const g=i=>document.getElementById(i),a=new Audio(),L=['jingle1.mp3','jingle2.mp3'],b=g('mpb'),n=g('mpn'),t=g('mpt');let i=0,on=false;a.src=L[0];a.preload='none';
+const ui=()=>{b.textContent=on?'⏸':'▶';t.textContent='Jingle Pilketos '+(i+1)+'/2'};
+const play=()=>a.play().then(()=>{on=true;ui()}).catch(()=>{on=false;ui()});
+const nx=()=>{i=(i+1)%2;a.src=L[i];play()};
+b.onclick=()=>on?(a.pause(),on=false,ui()):play();n.onclick=nx;a.onended=nx;ui();
+if(auto){const f=e=>{if(e.target.closest&&e.target.closest('#mp'))return;removeEventListener('pointerdown',f);if(!on)play()};addEventListener('pointerdown',f)}
+if(watch)setInterval(()=>{if(g('loginScreen').classList.contains('hidden')&&on){a.pause();on=false;ui()}},1000)})(true,false);
+</script>
+</body></html>
