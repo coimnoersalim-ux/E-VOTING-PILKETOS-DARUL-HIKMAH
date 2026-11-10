@@ -168,12 +168,13 @@ body[data-jj=mts] #bilik>div{border-radius:36px!important}
  </aside>
  <div class="flex-1 flex flex-col overflow-hidden">
   <header class="bg-white shadow-sm border-b px-4 md:px-8 py-4 flex justify-between items-center gap-4">
-   <h2 class="text-base md:text-xl font-bold">Dashboard Pilketos MA Darul Hikmah Cikatomas</h2>
+   <div class="flex items-center gap-3 min-w-0"><button onclick="toggleSidebar()" title="Sembunyikan / tampilkan menu" class="shrink-0 w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-lg">☰</button><h2 class="text-base md:text-xl font-bold">Dashboard Pilketos MA Darul Hikmah Cikatomas</h2></div>
    <div class="flex items-center gap-2"><span id="conn" class="hidden md:inline text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-100 text-slate-500">● Menyambung…</span><div id="statusPemilu" class="px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap"></div></div>
   </header>
   <main class="flex-1 overflow-y-auto p-4 md:p-8">
    <section id="tab-quickCount" class="tab hidden">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6" id="stats"></div>
+    <div id="qcCards" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-6"></div>
     <div class="bg-white p-6 rounded-2xl shadow-sm border mb-6">
      <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><i data-lucide="bar-chart" class="w-5 h-5 text-amber-500"></i> Perolehan Suara Real-Time</h3>
      <div class="h-80"><canvas id="voteChart"></canvas></div>
@@ -495,14 +496,23 @@ function renderPemilih(){const q=($('cariPemilih').value||'').toLowerCase(),all=
  icons()}
 
 /* ---------- QUICK COUNT ---------- */
+const WARNA=['#2563eb','#f59e0b','#10b981','#ef4444','#8b5cf6','#06b6d4'],qimg={};let qcCs=[];
+const fotoPlg={id:'foto',afterDatasetsDraw(ch){const m=ch.getDatasetMeta(0),x=ch.ctx;qcCs.forEach((c,i)=>{const b=m.data[i];if(!b||!c.foto)return;let im=qimg[c.id];
+ if(!im||im.s0!==c.foto){im=qimg[c.id]=new Image();im.s0=c.foto;im.onload=()=>chart&&chart.update('none');im.src=c.foto}
+ if(!im.complete||!im.naturalWidth)return;const r=24,cx=b.x,cy=b.y-r-6,sd=Math.min(im.naturalWidth,im.naturalHeight);
+ x.save();x.beginPath();x.arc(cx,cy,r,0,7);x.clip();x.drawImage(im,(im.naturalWidth-sd)/2,0,sd,sd,cx-r,cy-r,2*r,2*r);x.restore();
+ x.beginPath();x.arc(cx,cy,r,0,7);x.lineWidth=3;x.strokeStyle=WARNA[i%WARNA.length];x.stroke()})}};
+function toggleSidebar(){const a=document.querySelector('aside');a.style.display=a.style.display==='none'?'':'none';setTimeout(()=>{if(typeof chart!=='undefined'&&chart)chart.resize()},60)}
 function stats(){const ps=get(P,[]),cs=cands(),tot=ps.length,sdh=ps.filter(p=>p.status==='sudah').length,sum=cs.reduce((a,c)=>a+(c.suara||0),0);
  const card=(l,v,c)=>`<div class="bg-white p-5 rounded-2xl shadow-sm border"><p class="text-sm text-slate-500">${l}</p><h4 class="text-3xl font-bold ${c}">${v}</h4></div>`;
  $('stats').innerHTML=card('Total DPT',tot,'')+card('Sudah Memilih',sdh,'text-green-600')+card('Belum Memilih',tot-sdh,'text-amber-600')+card('Partisipasi',(tot?(sdh/tot*100).toFixed(1):0)+'%','text-blue-600');
  const labels=cs.length?cs.map(c=>`Paslon ${c.noUrut} (${c.ketua.split(' ')[0]})`):['Belum ada paslon'],data=cs.length?cs.map(c=>c.suara||0):[0];
- if(chart){chart.data.labels=labels;chart.data.datasets[0].data=data;chart.update('none')}
- else chart=new Chart($('voteChart').getContext('2d'),{type:'bar',data:{labels,datasets:[{label:'Suara',data,backgroundColor:'#f59e0b',borderRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}});
+ qcCs=cs;const colors=cs.length?cs.map((c,i)=>WARNA[i%WARNA.length]):['#94a3b8'],mx=Math.max(0,...cs.map(c=>c.suara||0));
+ $('qcCards').innerHTML=cs.map((c,i)=>{const pc=sum?((c.suara||0)/sum*100):0,col=WARNA[i%WARNA.length],lead=mx>0&&(c.suara||0)===mx;return`<div style="background:#fff;border-radius:20px;padding:14px;display:flex;gap:14px;align-items:center;box-shadow:0 0 0 3px ${col},0 12px 30px -14px rgba(15,23,42,.3)"><div style="width:76px;height:96px;border-radius:14px;overflow:hidden;background:#e2e8f0;flex-shrink:0"><img src="${esc(c.foto)||''}" style="width:100%;height:100%;object-fit:cover;object-position:top" onerror="this.removeAttribute('src')"></div><div class="min-w-0"><div class="text-xs font-bold" style="color:${col}">PASLON ${c.noUrut}${lead?' 👑':''}</div><div class="font-bold text-sm leading-tight">${esc(c.ketua)}</div><div class="text-xs text-slate-500">${esc(c.wakil)}</div><div class="text-3xl font-extrabold mt-1" style="color:${col}">${c.suara||0} <span class="text-xs font-semibold text-slate-500">${pc.toFixed(1)}%</span></div></div></div>`}).join('');
+ if(chart){chart.data.labels=labels;chart.data.datasets[0].data=data;chart.data.datasets[0].backgroundColor=colors;chart.update('none')}
+ else chart=new Chart($('voteChart').getContext('2d'),{type:'bar',data:{labels,datasets:[{label:'Suara',data,backgroundColor:colors,borderRadius:8}]},plugins:[fotoPlg],options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:60}},plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}});
  $('rank').innerHTML='<h3 class="font-bold mb-3">Peringkat</h3>'+([...cs].sort((a,b)=>(b.suara||0)-(a.suara||0)).map(c=>{const pc=sum?((c.suara||0)/sum*100):0;
-  return`<div class="mb-3"><div class="flex justify-between text-sm"><span>No. ${c.noUrut} — ${esc(c.ketua)} &amp; ${esc(c.wakil)}</span><b>${c.suara||0} suara (${pc.toFixed(1)}%)</b></div><div class="h-2 bg-slate-100 rounded"><div class="h-2 bg-amber-500 rounded" style="width:${pc}%"></div></div></div>`}).join('')||'<p class="text-slate-500 text-sm">Belum ada paslon.</p>')}
+  return`<div class="mb-3"><div class="flex justify-between text-sm"><span class="flex items-center gap-2"><img src="${esc(c.foto)||''}" class="w-9 h-9 rounded-full object-cover object-top bg-slate-200" onerror="this.removeAttribute('src')">No. ${c.noUrut} — ${esc(c.ketua)} &amp; ${esc(c.wakil)}</span><b>${c.suara||0} suara (${pc.toFixed(1)}%)</b></div><div class="h-2 bg-slate-100 rounded"><div class="h-2 rounded" style="width:${pc}%;background:${WARNA[Math.max(0,cs.findIndex(x=>x.id===c.id))%WARNA.length]}"></div></div></div>`}).join('')||'<p class="text-slate-500 text-sm">Belum ada paslon.</p>')}
 
 function hasil(){const cs=cands(),mx=Math.max(0,...cs.map(c=>c.suara||0));return{cs,mx,top:mx>0?cs.filter(c=>(c.suara||0)===mx):[]}}
 
